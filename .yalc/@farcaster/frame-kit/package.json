@@ -1,0 +1,24 @@
+{
+  "name": "@farcaster/frame-kit",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "preversion": "npm run build",
+    "postversion": "git push --follow-tags"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "comlink": "^4.4.2",
+    "eventemitter3": "^5.0.1",
+    "ox": "^0.1.6",
+    "viem": "^2.21.44"
+  },
+  "yalcSig": "9343519dbed477360a0635132a6eb9bd"
+}

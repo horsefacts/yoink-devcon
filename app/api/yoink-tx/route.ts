@@ -12,33 +12,46 @@ import { formatDuration } from "../../../lib/time";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const address = searchParams.get('address');
+    const address = searchParams.get("address");
     if (!address) {
-      return NextResponse.json({
-        message: 'Missing address'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          message: "Missing address",
+        },
+        { status: 400 },
+      );
     }
     await simulateYoink(address as Hex);
   } catch (err) {
     if (err instanceof BaseError) {
       const revertError = err.walk(
-        (err) => err instanceof ContractFunctionRevertedError
+        (err) => err instanceof ContractFunctionRevertedError,
       );
       if (revertError instanceof ContractFunctionRevertedError) {
         const errorName = revertError.data?.errorName ?? "";
-        if (errorName === 'Unauthorized') {
-           return NextResponse.json({
-              message: "You have the flag. You can't yoink from yourself."
-            }, { status: 403 });
-        } else if (errorName === 'SlowDown') {
-           const [timeLeft] = revertError.data?.args ?? [];
-           return NextResponse.json({
-              message: `You're yoinking too fast. Try again in ${formatDuration(Number(timeLeft))}.`
-            }, { status: 403 });
+        if (errorName === "Unauthorized") {
+          return NextResponse.json(
+            {
+              message: "You have the flag. You can't yoink from yourself.",
+            },
+            { status: 403 },
+          );
+        } else if (errorName === "SlowDown") {
+          const [timeLeft] = revertError.data?.args ?? [];
+          return NextResponse.json(
+            {
+              message: `You're yoinking too fast. Try again in ${formatDuration(Number(timeLeft))}.`,
+              timeLeft: Number(timeLeft),
+            },
+            { status: 403 },
+          );
         } else {
-           return NextResponse.json({
-              message: `Something went wrong`
-            }, { status: 403 });
+          return NextResponse.json(
+            {
+              message: `Something went wrong`,
+            },
+            { status: 403 },
+          );
         }
       }
     }
@@ -58,5 +71,4 @@ export async function GET(request: NextRequest) {
       data: calldata,
     },
   });
-};
-
+}

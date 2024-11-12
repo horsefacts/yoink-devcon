@@ -1,15 +1,17 @@
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
-export const alt = 'yoink the flag';
+export const alt = "yoink the flag";
 export const size = {
   width: 1200,
   height: 1200,
 };
 
-export const contentType = 'image/png';
-export const metadataBase = new URL('https://regarding-waterproof-within-ve.trycloudflare.com');
+export const contentType = "image/png";
+export const metadataBase = new URL(
+  "https://regarding-waterproof-within-ve.trycloudflare.com",
+);
 
 export default async function Image() {
   return new ImageResponse(
@@ -23,6 +25,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    }
+    },
   );
 }

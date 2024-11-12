@@ -1,8 +1,10 @@
-import { getLastYoinkedBy, getTotalYoinks } from "../../lib/contract";
-import { getUserByAddress, truncateAddress } from "../../lib/neynar";
-import { Yoink } from "./Yoink";
-
 import { Metadata } from "next";
+
+import { Leaderboard } from "../Leaderboard";
+import { Hex } from "viem";
+import { UserHeader } from "../UserHeader";
+
+// export const dynamic = 'force-dynamic'
 
 const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
 const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
@@ -22,8 +24,6 @@ const frame = {
   },
 };
 
-export const revalidate = 300;
-
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Yoink!",
@@ -37,21 +37,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Page() {
-  const [lastYoinkedBy, totalYoinks] = await Promise.all([
-    getLastYoinkedBy(),
-    getTotalYoinks(),
-  ]);
-
-  const user = await getUserByAddress(lastYoinkedBy);
-  const username = user ? user.username : truncateAddress(lastYoinkedBy);
-  const pfp = user?.pfp_url;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const address =
+    typeof searchParams.address === "string"
+      ? searchParams.address
+      : "0xcA698e19280DFB59084A15f7E891778c483Be0DC";
 
   return (
-    <Yoink
-      lastYoinkedBy={username}
-      pfpUrl={pfp}
-      totalYoinks={totalYoinks.toLocaleString()}
-    />
+    <div className="p-3 space-y-3">
+      <UserHeader address={address as Hex} hasFlag />
+      <Leaderboard />
+    </div>
   );
 }
