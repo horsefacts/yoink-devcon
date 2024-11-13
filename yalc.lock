@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@farcaster/frame-kit": {
+      "signature": "309f44d3c5fc7b38b37ca525c0ff61aa",
+      "file": true,
+      "replaced": "file:/Users/deodad/Repos/auth-monorepo/packages/frame-kit"
+    }
+  }
+}

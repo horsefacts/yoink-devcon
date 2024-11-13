@@ -11,7 +11,7 @@ export const getServerSideProps = async function getServerSideProps() {
     "/api/frames",
     process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000"
+      : "http://localhost:3000",
   );
 
   return {

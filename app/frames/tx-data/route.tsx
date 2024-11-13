@@ -18,16 +18,21 @@ export const POST = frames(async (ctx) => {
   } catch (err) {
     if (err instanceof BaseError) {
       const revertError = err.walk(
-        (err) => err instanceof ContractFunctionRevertedError
+        (err) => err instanceof ContractFunctionRevertedError,
       );
       if (revertError instanceof ContractFunctionRevertedError) {
         const errorName = revertError.data?.errorName ?? "";
-        if (errorName === 'Unauthorized') {
-           return error("You have the flag. You can't yoink from yourself.", 403);
-        } else if (errorName === 'SlowDown') {
-
-           const [timeLeft] = revertError.data?.args ?? [];
-           return error(`You're yoinking too fast. Try again in ${formatDuration(Number(timeLeft))}.`, 403);
+        if (errorName === "Unauthorized") {
+          return error(
+            "You have the flag. You can't yoink from yourself.",
+            403,
+          );
+        } else if (errorName === "SlowDown") {
+          const [timeLeft] = revertError.data?.args ?? [];
+          return error(
+            `You're yoinking too fast. Try again in ${formatDuration(Number(timeLeft))}.`,
+            403,
+          );
         } else {
           return error("Something went wrong.", 403);
         }
