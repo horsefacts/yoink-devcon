@@ -4,7 +4,8 @@ import { intervalToDuration, Duration, formatDistance } from "date-fns";
 
 import { getScoreByAddress, getTotalYoinks } from "../../lib/contract";
 import { getUserByAddress, truncateAddress } from "../../lib/neynar";
-import Flag from "../../public/flag.png";
+import Flag from "../../public/flag_simple.png";
+import FlagAvatar from "../../public/flag.png";
 
 export async function UserHeader(props: {
   address: string;
@@ -34,7 +35,7 @@ async function UserHeaderInner({
   ]);
 
   const username = userByAddress?.username ?? truncateAddress(address);
-  const pfpUrl = userByAddress?.pfp_url;
+  const pfpUrl = userByAddress?.pfp_url ?? FlagAvatar;
   const duration = formatCustomDuration(
     intervalToDuration({
       start: 0,

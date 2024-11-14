@@ -7,7 +7,8 @@ import { sdk } from "@farcaster/frame-kit";
 import { useConnect } from "wagmi";
 import { revalidateFramesV2 } from "./actions";
 
-import Flag from "../../public/flag.png";
+import Flag from "../../public/flag_simple.png";
+import FlagAvatar from "../../public/flag.png";
 import { WagmiProvider } from "../WagmiProvider";
 import {
   useAccount,
@@ -53,6 +54,7 @@ function YoinkStart({
   const txReceiptResult = useWaitForTransactionReceipt({ hash });
 
   const [timeLeft, setTimeLeft] = useState<number>();
+  const pfp = pfpUrl ?? FlagAvatar;
 
   const yoinkOnchain = useCallback(async () => {
     try {
@@ -130,10 +132,10 @@ function YoinkStart({
   }, []);
 
   useEffect(() => {
-    if (!pfpUrl) {
+    if (!pfp) {
       void init();
     }
-  }, [init, pfpUrl]);
+  }, [init, pfp]);
 
   useEffect(() => {
     sdk.on("primaryButtonClicked", handleYoink);
@@ -161,10 +163,6 @@ function YoinkStart({
     };
   }, []);
 
-  // if (1 > 0) {
-  //   return <SendTransaction />;
-  // }
-
   if (typeof timeLeft === "number") {
     return (
       <>
@@ -183,28 +181,26 @@ function YoinkStart({
     <>
       <div className="mt-3 p-3">
         <div className="pb-8 px-8 flex flex-col items-center">
-          {!!pfpUrl && (
-            <div className="relative mb-1">
-              <div className="flex overflow-hidden rounded-full h-[112px] w-[112px] border border-red-800">
-                <Image
-                  src={pfpUrl}
-                  className="w-full h-full object-cover"
-                  onLoadingComplete={init}
-                  alt="avatar"
-                  width="112"
-                  height="112"
-                />
-              </div>
-              <div className="absolute right-0 bottom-0 flex items-center justify-center bg-[#F7F7F7] border border-[#F5F3F4] rounded-full h-[36px] w-[36px]">
-                <Image
-                  src={Flag}
-                  width={14.772}
-                  height={19.286}
-                  alt="yoink flag"
-                />
-              </div>
+          <div className="relative mb-1">
+            <div className="flex overflow-hidden rounded-full h-[112px] w-[112px]">
+              <Image
+                src={pfpUrl ?? FlagAvatar}
+                className="w-full h-full object-cover"
+                onLoadingComplete={init}
+                alt="avatar"
+                width="112"
+                height="112"
+              />
             </div>
-          )}
+            <div className="absolute right-0 bottom-0 flex items-center justify-center bg-[#F7F7F7] border border-[#F5F3F4] rounded-full h-[36px] w-[36px]">
+              <Image
+                src={Flag}
+                width={14.772}
+                height={19.286}
+                alt="yoink flag"
+              />
+            </div>
+          </div>
           {txReceiptResult.isLoading || txReceiptResult.isSuccess ? (
             <div className="text-center text-2xl font-black text-[#BA181B]">
               grabbing that flag for you from {lastYoinkedBy} ...🤫
