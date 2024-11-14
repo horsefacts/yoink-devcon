@@ -3,6 +3,8 @@ import { Hex } from "viem";
 import { Leaderboard } from "../Leaderboard";
 import { UserHeader } from "../UserHeader";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
 const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
 const route = `${domain}/framesV2`;

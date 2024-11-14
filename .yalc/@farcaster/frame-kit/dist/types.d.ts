@@ -28,6 +28,11 @@ export type AppFrameHost = {
     close: () => void;
     hideSplashScreen: () => void;
     openUrl: (url: string) => void;
+    followChannel: (options: {
+        key: string;
+    }) => Promise<{
+        followed: boolean;
+    }>;
     setPrimaryButton: SetPrimaryButton;
     ethProviderRequest: RpcTransport.RequestFn;
 };
@@ -38,5 +43,10 @@ export type AppFrameSDK = {
     close: () => Promise<void>;
     hideSplashScreen: () => Promise<void>;
     openUrl: (url: string) => Promise<void>;
+    followChannel: (options: {
+        key: string;
+    }) => Promise<{
+        followed: boolean;
+    }>;
     setPrimaryButton: SetPrimaryButton;
 } & Emitter;

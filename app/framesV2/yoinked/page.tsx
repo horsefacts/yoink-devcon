@@ -4,7 +4,7 @@ import { Leaderboard } from "../Leaderboard";
 import { Hex } from "viem";
 import { UserHeader } from "../UserHeader";
 
-// export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
 const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";

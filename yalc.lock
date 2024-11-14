@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@farcaster/frame-kit": {
-      "signature": "309f44d3c5fc7b38b37ca525c0ff61aa",
+      "signature": "cead3ab7bbb25dbe2a1f38b701d2885c",
       "file": true,
       "replaced": "file:/Users/deodad/Repos/auth-monorepo/packages/frame-kit"
     }
