@@ -47,7 +47,7 @@ async function UserHeaderInner({
     <div className="space-y-3">
       <div className="flex flex-row items-center gap-4">
         <div className="relative mb-1">
-          <div className="flex object-cover rounded-full h-[64px] w-[64px] bg-gray-200">
+          <div className="flex object-cover object-center rounded-full h-[64px] w-[64px] bg-gray-200">
             {pfpUrl && (
               <Image
                 src={pfpUrl}

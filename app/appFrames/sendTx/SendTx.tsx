@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { sdk } from "@farcaster/frame-kit";
-import { useConnect } from "wagmi";
-import { parseEther } from "viem";
+import { useChainId, useConnect, useSwitchChain } from "wagmi";
+import { BaseError, parseEther } from "viem";
 
 import { WagmiProvider } from "../../WagmiProvider";
 import {
@@ -11,6 +11,7 @@ import {
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { base } from "wagmi/chains";
 
 export default function SendTx() {
   return (
@@ -23,8 +24,13 @@ export default function SendTx() {
 function SendTxInner() {
   const { connectors, connectAsync } = useConnect();
   const account = useAccount();
-  const { data: hash, sendTransactionAsync: sendTransaction } =
-    useSendTransaction();
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
+  const {
+    data: hash,
+    sendTransactionAsync: sendTransaction,
+    isPending: sendIsPending,
+  } = useSendTransaction();
   const txResult = useWaitForTransactionReceipt({ hash });
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -33,21 +39,35 @@ function SendTxInner() {
       const formData = new FormData(formRef.current as HTMLFormElement);
       const to = formData.get("address") as `0x${string}`;
       const value = formData.get("value") as string;
-      await sendTransaction({ to, value: parseEther(value) });
-    } catch {
-      // no-op
+      await sendTransaction({ to, value: parseEther(value), chainId: base.id });
+    } catch (e) {
+      if (e instanceof BaseError) {
+        // Coinbase Wallet
+        if (e.details.startsWith("User denied request")) {
+          // no-op
+          return;
+        }
+      }
+
+      alert(`Error sending tx: ${e}`);
     }
   }, [sendTransaction]);
 
   const handleSubmit = useCallback(async () => {
     try {
       if (!account.isConnected) {
-        const connectResult = await connectAsync({ connector: connectors[0]! });
-        if (connectResult.accounts.length) {
-          await submit();
+        await connectAsync({
+          connector: connectors[0]!,
+          chainId: base.id,
+        });
+
+        return await submit();
+      } else {
+        if (chainId !== base.id) {
+          await switchChainAsync({ chainId: base.id });
         }
-      } else if (account.address) {
-        await submit();
+
+        return await submit();
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -62,7 +82,18 @@ function SendTxInner() {
 
       alert(`Unable to connect`);
     }
-  }, [account.address, account.isConnected, connectAsync, connectors, submit]);
+  }, [
+    account.isConnected,
+    chainId,
+    connectAsync,
+    connectors,
+    submit,
+    switchChainAsync,
+  ]);
+
+  const handleClose = useCallback(async () => {
+    sdk.close();
+  }, []);
 
   useEffect(() => {
     sdk.hideSplashScreen();
@@ -72,10 +103,16 @@ function SendTxInner() {
     <>
       <div className="p-3">
         {account.address && (
-          <div className="mb-1">
-            <div className="text-gray-700 text-xs">Connected as</div>
-            <div className="text-sm font-mono">{account.address}</div>
-          </div>
+          <>
+            <div className="mb-1">
+              <div className="text-gray-700 text-xs">Connected as</div>
+              <div className="text-sm font-mono">{account.address}</div>
+            </div>
+            <div className="mb-1">
+              <div className="text-gray-700 text-xs">Chain</div>
+              <div className="text-sm font-mono">{chainId}</div>
+            </div>
+          </>
         )}
         <form onSubmit={submit} ref={formRef}>
           <div className="text-gray-700 text-xs mt-1">To:</div>
@@ -127,8 +164,14 @@ function SendTxInner() {
           )}
         </form>
       </div>
-      {!(txResult.isLoading || txResult.isSuccess) && (
-        <AppFrameButton text="Send" onClick={handleSubmit} />
+      {txResult.isLoading || txResult.isSuccess ? (
+        <AppFrameButton text="Close" onClick={handleClose} />
+      ) : (
+        <AppFrameButton
+          text="Send"
+          onClick={handleSubmit}
+          loading={sendIsPending}
+        />
       )}
     </>
   );

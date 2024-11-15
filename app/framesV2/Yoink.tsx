@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { sdk } from "@farcaster/frame-kit";
-import { useConnect } from "wagmi";
+import { useChainId, useConnect, useSwitchChain } from "wagmi";
 import { revalidateFramesV2 } from "./actions";
 
 import Flag from "../../public/flag_simple.png";
@@ -15,6 +15,8 @@ import {
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { base } from "viem/chains";
+import { BaseError } from "viem";
 
 export default function Yoink(props: {
   lastYoinkedBy: string;
@@ -48,6 +50,8 @@ function YoinkStart({
   const router = useRouter();
 
   const { connectors, connectAsync } = useConnect();
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
   const account = useAccount();
   const { data: hash, sendTransactionAsync: sendTransaction } =
     useSendTransaction();
@@ -80,17 +84,36 @@ function YoinkStart({
       }
 
       const txData = await res.json();
-      await sendTransaction({ to: txData.params.to, data: txData.params.data });
+      await sendTransaction({
+        to: txData.params.to,
+        data: txData.params.data,
+        // chainId: base.id,
+      });
+
       sdk.setPrimaryButton({ text: "Yoinking", hidden: true });
-    } catch {
+    } catch (e) {
       sdk.setPrimaryButton({ text: "Yoink" });
+
+      if (e instanceof BaseError) {
+        // Coinbase Wallet
+        if (e.details.startsWith("User denied requiest")) {
+          // no-op
+          return;
+        }
+      }
+
+      alert(`Error sending tx: ${e}`);
     }
   }, [account.address, sendTransaction]);
 
   const handleYoink = useCallback(async () => {
     try {
       if (!account.isConnected) {
-        const connectResult = await connectAsync({ connector: connectors[0]! });
+        const connectResult = await connectAsync({
+          connector: connectors[0]!,
+          chainId: base.id,
+        });
+
         if (connectResult.accounts.length) {
           await yoinkOnchain();
           return;
@@ -98,11 +121,12 @@ function YoinkStart({
           alert("Unable to connect: no addresses");
           return;
         }
-      } else if (account.address) {
-        await yoinkOnchain();
-        return;
       } else {
-        alert("Unexpected state");
+        if (chainId !== base.id) {
+          await switchChainAsync({ chainId: base.id });
+        }
+
+        await yoinkOnchain();
         return;
       }
     } catch (e) {
@@ -119,11 +143,12 @@ function YoinkStart({
       alert(`Unable to connect`);
     }
   }, [
-    account.address,
     account.isConnected,
-    connectors,
     connectAsync,
+    connectors,
     yoinkOnchain,
+    chainId,
+    switchChainAsync,
   ]);
 
   const init = useCallback(async () => {
@@ -185,7 +210,7 @@ function YoinkStart({
             <div className="flex overflow-hidden rounded-full h-[112px] w-[112px]">
               <Image
                 src={pfpUrl ?? FlagAvatar}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
                 onLoadingComplete={init}
                 alt="avatar"
                 width="112"
