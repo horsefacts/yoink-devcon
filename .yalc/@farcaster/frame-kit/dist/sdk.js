@@ -27,9 +27,9 @@ export const sdk = {
     untrustedUser: appFrameHost.untrustedUser,
     setPrimaryButton: appFrameHost.setPrimaryButton.bind(appFrameHost),
     hideSplashScreen: appFrameHost.hideSplashScreen.bind(appFrameHost),
-    followChannel: appFrameHost.followChannel.bind(appFrameHost),
     close: appFrameHost.close.bind(appFrameHost),
-    openUrl: appFrameHost.openUrl.bind(appFrameHost)
+    openUrl: appFrameHost.openUrl.bind(appFrameHost),
+    followChannel: appFrameHost.followChannel.bind(appFrameHost),
 };
 document.addEventListener("FarcasterAppFrameEvent", (event) => {
     if (event instanceof MessageEvent) {

@@ -15,7 +15,9 @@ export default function FollowChannel() {
         setFollowedKey(key);
       }
     } catch (e) {
+      alert("followChannelType:  " + typeof sdk.followChannel);
       alert(`Failed: ${e}`);
+      throw e;
     }
   }, []);
 

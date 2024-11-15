@@ -823,7 +823,7 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/frame-kit@file:../auth-monorepo/packages/frame-kit":
+"@farcaster/frame-kit@file:.yalc/@farcaster/frame-kit":
   version "0.0.1"
   dependencies:
     comlink "^4.4.2"
