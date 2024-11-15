@@ -95,8 +95,12 @@ function YoinkStart({
       sdk.setPrimaryButton({ text: "Yoink" });
 
       if (e instanceof BaseError) {
-        // Coinbase Wallet
-        if (e.details.startsWith("User denied requiest")) {
+        if (
+          // Coinbase Wallet
+          e.details.startsWith("User denied request") ||
+          // Rainbow
+          e.details.startsWith("User rejected request")
+        ) {
           // no-op
           return;
         }
@@ -130,17 +134,19 @@ function YoinkStart({
         return;
       }
     } catch (e) {
-      if (e instanceof Error) {
-        if (e.message.startsWith("User rejected the request")) {
+      if (e instanceof BaseError) {
+        if (
+          // Coinbase Wallet
+          e.details.startsWith("User denied request") ||
+          // Rainbow
+          e.details.startsWith("User rejected request")
+        ) {
           // no-op
           return;
         }
-
-        alert(`Unable to connect: ${e.message}`);
-        return;
       }
 
-      alert(`Unable to connect`);
+      alert(`Unable to connect: ${e}`);
     }
   }, [
     account.isConnected,

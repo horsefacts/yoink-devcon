@@ -42,8 +42,12 @@ function SendTxInner() {
       await sendTransaction({ to, value: parseEther(value), chainId: base.id });
     } catch (e) {
       if (e instanceof BaseError) {
-        // Coinbase Wallet
-        if (e.details.startsWith("User denied request")) {
+        if (
+          // Coinbase Wallet
+          e.details.startsWith("User denied request") ||
+          // Rainbow
+          e.details.startsWith("User rejected request")
+        ) {
           // no-op
           return;
         }
@@ -70,17 +74,19 @@ function SendTxInner() {
         return await submit();
       }
     } catch (e) {
-      if (e instanceof Error) {
-        if (e.message.startsWith("User rejected the request")) {
+      if (e instanceof BaseError) {
+        if (
+          // Coinbase Wallet
+          e.details.startsWith("User denied request") ||
+          // Rainbow
+          e.details.startsWith("User rejected request")
+        ) {
           // no-op
           return;
         }
-
-        alert(`Unable to connect: ${e.message}`);
-        return;
       }
 
-      alert(`Unable to connect`);
+      alert(`Unable to connect: ${e}`);
     }
   }, [
     account.isConnected,
