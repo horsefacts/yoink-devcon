@@ -6,7 +6,7 @@ export async function Leaderboard() {
   const leaderboard = await getLeaderboard(10);
 
   return (
-    <div>
+    <div className="px-3">
       <div className="text-[#8B99A4] font-semibold">Leaderboard</div>
       {leaderboard.map((leader, index) => (
         <Link

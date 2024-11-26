@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { sdk } from "@farcaster/frame-kit";
+import sdk from "@farcaster/frame-sdk";
 import { useChainId, useConnect, useSwitchChain } from "wagmi";
 import { revalidateFramesV2 } from "./actions";
 
@@ -17,6 +17,7 @@ import {
 } from "wagmi";
 import { base } from "viem/chains";
 import { BaseError } from "viem";
+import { RecentActivity } from "./RecentActivity";
 
 export default function Yoink(props: {
   lastYoinkedBy: string;
@@ -62,7 +63,11 @@ function YoinkStart({
 
   const yoinkOnchain = useCallback(async () => {
     try {
-      sdk.setPrimaryButton({ text: "Yoink", disabled: true, loading: true });
+      sdk.actions.setPrimaryButton({
+        text: "Yoink",
+        disabled: true,
+        loading: true,
+      });
 
       const params = new URLSearchParams({
         address: account.address ?? "unknown",
@@ -73,10 +78,10 @@ function YoinkStart({
         const error = await res.json();
 
         if (error.timeLeft) {
-          sdk.setPrimaryButton({ text: "Yoink", disabled: true });
+          sdk.actions.setPrimaryButton({ text: "Yoink", disabled: true });
           setTimeLeft(error.timeLeft);
         } else {
-          sdk.setPrimaryButton({ text: "Yoink" });
+          sdk.actions.setPrimaryButton({ text: "Yoink" });
           alert(error.message);
         }
 
@@ -90,9 +95,9 @@ function YoinkStart({
         // chainId: base.id,
       });
 
-      sdk.setPrimaryButton({ text: "Yoinking", hidden: true });
+      sdk.actions.setPrimaryButton({ text: "Yoinking", hidden: true });
     } catch (e) {
-      sdk.setPrimaryButton({ text: "Yoink" });
+      sdk.actions.setPrimaryButton({ text: "Yoink" });
 
       if (e instanceof BaseError) {
         if (
@@ -158,8 +163,8 @@ function YoinkStart({
   ]);
 
   const init = useCallback(async () => {
-    await sdk.setPrimaryButton({ text: "Yoink" });
-    sdk.hideSplashScreen();
+    await sdk.actions.setPrimaryButton({ text: "Yoink" });
+    sdk.actions.ready();
   }, []);
 
   useEffect(() => {
@@ -177,7 +182,7 @@ function YoinkStart({
 
   useEffect(() => {
     if (txReceiptResult.isLoading) {
-      sdk.setPrimaryButton({ text: "Yoinking", hidden: true });
+      sdk.actions.setPrimaryButton({ text: "Yoinking", hidden: true });
     }
   }, [txReceiptResult.isLoading]);
 
@@ -190,69 +195,76 @@ function YoinkStart({
 
   useEffect(() => {
     return () => {
-      sdk.setPrimaryButton({ text: "", hidden: true });
+      sdk.actions.setPrimaryButton({ text: "", hidden: true });
     };
   }, []);
 
+  const isWarpcastUsername = (username: string) => !username.includes("…");
+
+  const handleProfileClick = useCallback(() => {
+    sdk.actions.openUrl(`https://warpcast.com/${lastYoinkedBy}`);
+  }, [lastYoinkedBy]);
+
   if (typeof timeLeft === "number") {
     return (
-      <>
-        <div className="mt-3 p-3">
-          <TimeLeft
-            timeLeft={timeLeft}
-            setTimeLeft={setTimeLeft}
-            yoink={yoinkOnchain}
-          />
-        </div>
-      </>
+      <div className="mt-3 p-3">
+        <TimeLeft
+          timeLeft={timeLeft}
+          setTimeLeft={setTimeLeft}
+          yoink={yoinkOnchain}
+        />
+      </div>
     );
   }
 
   return (
-    <>
-      <div className="mt-3 p-3">
-        <div className="pb-8 px-8 flex flex-col items-center">
-          <div className="relative mb-1">
-            <div className="flex overflow-hidden rounded-full h-[112px] w-[112px]">
-              <Image
-                src={pfpUrl ?? FlagAvatar}
-                className="w-full h-full object-cover object-center"
-                onLoadingComplete={init}
-                alt="avatar"
-                width="112"
-                height="112"
-              />
-            </div>
-            <div className="absolute right-0 bottom-0 flex items-center justify-center bg-[#F7F7F7] border border-[#F5F3F4] rounded-full h-[36px] w-[36px]">
-              <Image
-                src={Flag}
-                width={14.772}
-                height={19.286}
-                alt="yoink flag"
-              />
-            </div>
+    <div className="mt-6 p-3 flex-col items-center">
+      <div></div>
+      <div className="pb-8 px-8 flex flex-col items-center">
+        <div className="relative mb-1">
+          <div className="flex overflow-hidden rounded-full h-[112px] w-[112px]">
+            <Image
+              src={pfpUrl ?? FlagAvatar}
+              className="w-full h-full object-cover object-center"
+              onLoadingComplete={init}
+              alt="avatar"
+              width="112"
+              height="112"
+            />
           </div>
-          {txReceiptResult.isLoading || txReceiptResult.isSuccess ? (
-            <div className="text-center text-2xl font-black text-[#BA181B]">
-              grabbing that flag for you from {lastYoinkedBy} ...🤫
-            </div>
-          ) : (
-            <>
-              <div className="flex text-2xl font-black text-[#BA181B] uppercase mb-1">
-                Yoink!
-              </div>
-              <div className="mb-1 font-bold text-sm text-center">
-                {lastYoinkedBy} has the flag
-              </div>
-              <div className="text-xs">
-                The flag has been yoinked{" "}
-                <span className="text-[#BA181B]">{totalYoinks} times</span>
-              </div>
-            </>
-          )}
+          <div className="absolute right-0 bottom-0 flex items-center justify-center bg-[#F7F7F7] border border-[#F5F3F4] rounded-full h-[36px] w-[36px]">
+            <Image src={Flag} width={14.772} height={19.286} alt="yoink flag" />
+          </div>
         </div>
+        {txReceiptResult.isLoading || txReceiptResult.isSuccess ? (
+          <div className="text-center text-2xl font-black text-[#BA181B]">
+            Yoinking the flag from {lastYoinkedBy}… 🚩
+          </div>
+        ) : (
+          <>
+            <div className="flex text-2xl font-black text-[#BA181B] uppercase mb-1">
+              Yoink!
+            </div>
+            <div className="mb-1 font-bold text-sm text-center">
+              {lastYoinkedBy} has the flag
+            </div>
+            {isWarpcastUsername(lastYoinkedBy) && (
+              <button
+                onClick={handleProfileClick}
+                className="my-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg hover:bg-[#A11518] transition-colors duration-200 text-sm font-semibold"
+              >
+                View Profile
+              </button>
+            )}
+            <div className="text-sm">
+              The flag has been yoinked{" "}
+              <span className="text-[#BA181B]">{totalYoinks} times</span>
+            </div>
+          </>
+        )}
       </div>
-    </>
+      <RecentActivity />
+    </div>
   );
 }
 
@@ -290,7 +302,7 @@ function TimeLeft({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="text-xl font-bold mb-1">hold yer horses</div>
+      <div className="text-xl font-bold mb-1">🐎 hold yer horses</div>
       <div className="text-7xl font-black text-[#BA181B] uppercase mb-1 font-mono">
         {formatTime(timeLeft)}
       </div>
@@ -312,7 +324,7 @@ function AppFrameButton({
 }) {
   // Update button
   useEffect(() => {
-    sdk.setPrimaryButton({ text, disabled, loading });
+    sdk.actions.setPrimaryButton({ text, disabled, loading });
   }, [text, disabled, loading]);
 
   // Bind onClick
@@ -326,7 +338,7 @@ function AppFrameButton({
   // Hide button on unmount
   useEffect(() => {
     return () => {
-      sdk.setPrimaryButton({ text: "", hidden: true });
+      sdk.actions.setPrimaryButton({ text: "", hidden: true });
     };
   }, []);
 

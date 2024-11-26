@@ -1,15 +1,14 @@
 "use client";
 
 import { http, createConfig } from "wagmi";
-import { mainnet, base } from "wagmi/chains";
-import { appFrame } from "./connector";
+import { base } from "wagmi/chains";
+import { frameConnector } from "./connector";
 
 export const config = createConfig({
-  chains: [mainnet, base],
-  connectors: [appFrame()],
+  chains: [base],
+  connectors: [frameConnector()],
   ssr: window.process === undefined,
   transports: {
-    [mainnet.id]: http(),
     [base.id]: http(base.rpcUrls.default.http[0]),
   },
 });

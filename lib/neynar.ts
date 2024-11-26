@@ -1,7 +1,7 @@
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 
 export const client = new NeynarAPIClient(
-  process.env.NEYNAR_API_KEY ?? "NEYNAR_API_DOCS",
+  process.env.NEYNAR_API_KEY ?? "NEYNAR_API_DOCS"
 );
 
 export const getUserByAddress = async (address: string) => {
@@ -17,7 +17,7 @@ export const getUserByAddress = async (address: string) => {
 };
 
 export const getYoinksWithUsernames = async (
-  yoinks: { from: string; by: string }[],
+  yoinks: { from: string; by: string; timestamp: number }[]
 ) => {
   const uniqueAddresses = [
     ...new Set(yoinks.flatMap((yoink) => [yoink.from, yoink.by])),
@@ -33,12 +33,13 @@ export const getYoinksWithUsernames = async (
           ? userData[0].username
           : truncateAddress(address);
       return [address, username];
-    }),
+    })
   );
 
   return yoinks.map((yoink) => ({
     from: addressToUsername[yoink.from],
     by: addressToUsername[yoink.by],
+    timestamp: yoink.timestamp,
   }));
 };
 

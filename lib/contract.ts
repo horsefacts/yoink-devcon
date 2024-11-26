@@ -476,6 +476,7 @@ export const processRecentYoinks = (
   return events.slice(0, count).map((event) => ({
     by: event.by as Address,
     from: event.from as Address,
+    timestamp: event.timestamp,
   }));
 };
 

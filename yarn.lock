@@ -823,13 +823,21 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/frame-kit@file:.yalc/@farcaster/frame-kit":
-  version "0.0.1"
+"@farcaster/frame-core@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.4.tgz#651398056526abd361d342aa5c22f28403ec791f"
+  integrity sha512-5g2aGjpS2D2amNppRD01nWlxvV0PwN0zV8fJuwJT0vcD0c72W6c8zWOMidXAhzJ/BXf9hNekLxxMpWrZoqDNsw==
   dependencies:
+    ox "^0.1.6"
+
+"@farcaster/frame-sdk@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@farcaster/frame-sdk/-/frame-sdk-0.0.3.tgz#72159b447736ea0842c3bd08d0506f36eb787cd8"
+  integrity sha512-p9S7SSbIhOL/o9VIkbdlGqG7ooTopECm1PzxsZx/5CF+rC7xaqQQcwG4YgqIOg030tq1GprXFSChKCe7VJP3OA==
+  dependencies:
+    "@farcaster/frame-core" "^0.0.4"
     comlink "^4.4.2"
     eventemitter3 "^5.0.1"
-    ox "^0.1.6"
-    viem "^2.21.44"
 
 "@fastify/busboy@^2.0.0":
   version "2.1.1"
@@ -9949,7 +9957,7 @@ viem@2.7.15:
     isows "1.0.3"
     ws "8.13.0"
 
-viem@2.x, viem@^2.1.1, viem@^2.21.44:
+viem@2.x, viem@^2.1.1:
   version "2.21.44"
   resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.44.tgz#793600a6afa8c0c1d62b4b819d036f833f623195"
   integrity sha512-oyLTCt7OQUetQN2m9KPNgSA//MzpnQLABAyglPKh+fAypU8cTT/hC5UyLQvaYt4WPg6dkbKOxfsahV4739pu9w==

@@ -1,20 +1,19 @@
-import { provider } from "@farcaster/frame-kit";
+import sdk from "@farcaster/frame-sdk";
 import { SwitchChainError, fromHex, getAddress, numberToHex } from "viem";
-
 import { ChainNotConfiguredError, createConnector } from "wagmi";
 
-appFrame.type = "appFrame" as const;
+frameConnector.type = "frameConnector" as const;
 
-export function appFrame() {
-  let connected = true; // TODO consider flipping this back to false
-  let connectedChainId: number;
+export function frameConnector() {
+  let connected = true;
 
-  return createConnector<typeof provider>((config) => ({
+  return createConnector<typeof sdk.wallet.ethProvider>((config) => ({
     id: "farcaster",
     name: "Farcaster Wallet",
-    type: appFrame.type,
+    type: frameConnector.type,
+
     async setup() {
-      connectedChainId = config.chains[0].id;
+      this.connect({ chainId: config.chains[0].id });
     },
     async connect({ chainId } = {}) {
       const provider = await this.getProvider();
@@ -41,7 +40,9 @@ export function appFrame() {
     async getAccounts() {
       if (!connected) throw new Error("Not connected");
       const provider = await this.getProvider();
-      const accounts = await provider.request({ method: "eth_accounts" });
+      const accounts = await provider.request({
+        method: "eth_requestAccounts",
+      });
       return accounts.map((x) => getAddress(x));
     },
     async getChainId() {
@@ -51,19 +52,6 @@ export function appFrame() {
     },
     async isAuthorized() {
       if (!connected) {
-        // try {
-        //   const provider = await this.getProvider();
-        //   const autoAuthorized = await provider.request({
-        //     method: "fc_autoAuthorized",
-        //   });
-
-        //   if (autoAuthorized === true) {
-        //     return true;
-        //   }
-        // } catch {
-        //   // no-op
-        // }
-
         return false;
       }
 
@@ -92,12 +80,12 @@ export function appFrame() {
       const chainId = Number(chain);
       config.emitter.emit("change", { chainId });
     },
-    async onDisconnect(_error) {
+    async onDisconnect() {
       config.emitter.emit("disconnect");
       connected = false;
     },
-    async getProvider({ chainId } = {}) {
-      return provider;
+    async getProvider() {
+      return sdk.wallet.ethProvider;
     },
   }));
 }

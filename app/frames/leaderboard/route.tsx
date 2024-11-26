@@ -10,7 +10,7 @@ const frameHandler = frames(async (ctx) => {
   return {
     title: "Leaderboard",
     image: (
-      <div tw="flex flex-col w-full h-full p-16 gap-16 justify-between">
+      <div tw="flex flex-col w-full h-full py-8 px-16 gap-16 justify-between">
         <div tw="flex flex-col gap-2">
           <div tw="flex text-6xl font-bold mb-4">🏆 Leaderboard</div>
           {leaderboard.map((entry, idx) => (
