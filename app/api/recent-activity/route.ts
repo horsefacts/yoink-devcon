@@ -18,7 +18,7 @@ export async function GET() {
     console.error("Error fetching recent activity:", error);
     return NextResponse.json(
       { error: "Failed to fetch recent activity" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

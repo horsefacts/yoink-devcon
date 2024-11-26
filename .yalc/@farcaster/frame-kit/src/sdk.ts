@@ -1,19 +1,19 @@
-import { EventEmitter } from 'eventemitter3'
+import { EventEmitter } from "eventemitter3";
 import { AppFrameSDK, Emitter, EventMap } from "./types";
-import { appFrameHost } from './appFrameHost';
+import { appFrameHost } from "./appFrameHost";
 
 export function createEmitter(): Emitter {
-  const emitter = new EventEmitter<EventMap>()
+  const emitter = new EventEmitter<EventMap>();
 
   return {
     get eventNames() {
-      return emitter.eventNames.bind(emitter)
+      return emitter.eventNames.bind(emitter);
     },
     get listenerCount() {
-      return emitter.listenerCount.bind(emitter)
+      return emitter.listenerCount.bind(emitter);
     },
     get listeners() {
-      return emitter.listeners.bind(emitter)
+      return emitter.listeners.bind(emitter);
     },
     addListener: emitter.addListener.bind(emitter),
     emit: emitter.emit.bind(emitter),
@@ -22,7 +22,7 @@ export function createEmitter(): Emitter {
     once: emitter.once.bind(emitter),
     removeAllListeners: emitter.removeAllListeners.bind(emitter),
     removeListener: emitter.removeListener.bind(emitter),
-  }
+  };
 }
 
 const emitter = createEmitter();
@@ -35,12 +35,12 @@ export const sdk: AppFrameSDK = {
   close: appFrameHost.close.bind(appFrameHost),
   openUrl: appFrameHost.openUrl.bind(appFrameHost),
   followChannel: appFrameHost.followChannel.bind(appFrameHost),
-}
+};
 
 document.addEventListener("FarcasterAppFrameEvent", (event) => {
   if (event instanceof MessageEvent) {
-    if (event.data.type === 'primaryButtonClicked') {
-      emitter.emit('primaryButtonClicked') 
+    if (event.data.type === "primaryButtonClicked") {
+      emitter.emit("primaryButtonClicked");
     }
   }
 });

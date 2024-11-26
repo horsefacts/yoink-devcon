@@ -13,8 +13,7 @@ const webViewEndpoint: Endpoint = {
   },
 };
 
-export const endpoint = window?.ReactNativeWebView ? webViewEndpoint : 
-  // TODO fallback cleanly when not in iFrame or webview
-  windowEndpoint(window?.parent ?? window);
-
- 
+export const endpoint = window?.ReactNativeWebView
+  ? webViewEndpoint
+  : // TODO fallback cleanly when not in iFrame or webview
+    windowEndpoint(window?.parent ?? window);

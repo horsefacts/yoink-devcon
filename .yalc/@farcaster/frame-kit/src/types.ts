@@ -1,4 +1,4 @@
-import type { EventEmitter } from 'eventemitter3'
+import type { EventEmitter } from "eventemitter3";
 import type { RpcTransport } from "ox";
 
 declare global {
@@ -12,22 +12,20 @@ declare global {
 
 /** Combines members of an intersection into a readable type. */
 // https://twitter.com/mattpocockuk/status/1622730173446557697?s=20&t=NdpAcmEFXY01xkqU3KO0Mg
-export type Compute<type> = { [key in keyof type]: type[key] } & unknown
+export type Compute<type> = { [key in keyof type]: type[key] } & unknown;
 
 export type EventMap = {
-  primaryButtonClicked: () => void
-}
+  primaryButtonClicked: () => void;
+};
 
-export type Emitter = Compute<EventEmitter<EventMap>>
+export type Emitter = Compute<EventEmitter<EventMap>>;
 
-export type SetPrimaryButton = (
-	options: { 
-    text: string; 
-    loading?: boolean;
-    disabled?: boolean;
-    hidden?: boolean;
-	}
-) => Promise<void>;
+export type SetPrimaryButton = (options: {
+  text: string;
+  loading?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+}) => Promise<void>;
 
 export type AppFrameHost = {
   untrustedUser: {
@@ -39,7 +37,7 @@ export type AppFrameHost = {
   followChannel: (options: { key: string }) => Promise<{ followed: boolean }>;
   setPrimaryButton: SetPrimaryButton;
   ethProviderRequest: RpcTransport.RequestFn;
-}
+};
 
 export type AppFrameSDK = {
   untrustedUser: Promise<{

@@ -1,15 +1,15 @@
-import { Provider, RpcRequest } from 'ox'
+import { Provider, RpcRequest } from "ox";
 import { appFrameHost } from "./appFrameHost";
 
-const emitter = Provider.createEmitter()
-const store = RpcRequest.createStore()
+const emitter = Provider.createEmitter();
+const store = RpcRequest.createStore();
 
 export const provider = Provider.from({
-  ...emitter, 
+  ...emitter,
   async request(args) {
     return await appFrameHost.ethProviderRequest(
       // @ts-expect-error - from ox examples but our FetchFn needs better typing
-      store.prepare(args)
+      store.prepare(args),
     );
   },
 });
@@ -22,4 +22,3 @@ document.addEventListener("FarcasterAppFrameEvent", (event) => {
     // emitter.emit(event.type as (keyof Provider.EventMap), event.data);
   }
 });
-

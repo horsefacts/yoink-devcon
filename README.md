@@ -3,6 +3,7 @@
 Code for Yoink, a simple frame-based "capture the flag" game.
 
 See also:
+
 - [`yoink-contracts`](https://github.com/horsefacts/yoink-contracts): the smart contract.
 - [`yoink-indexer`](https://github.com/horsefacts/yoink-indexer): the indexer.
 
