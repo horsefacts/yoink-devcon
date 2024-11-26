@@ -3,7 +3,7 @@ const nextConfig = {
   // prevent double render on dev mode, which causes 2 frames to exist
   reactStrictMode: false,
   images: {
-    minimumCacheTTL: 1, // to allow dynamic images in case you are previewing them using next/image
+    minimumCacheTTL: 1,
     remotePatterns: [
       {
         hostname: "*",
@@ -14,6 +14,24 @@ const nextConfig = {
         protocol: "https",
       },
     ],
+  },
+  // Add headers configuration
+  async headers() {
+    return [
+      {
+        source: '/.well-known/farcaster.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+        ],
+      },
+    ];
   },
 };
 
