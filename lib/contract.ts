@@ -4,7 +4,9 @@ import { client, truncateAddress } from "./neynar";
 
 export const publicClient = createPublicClient({
   chain: base,
-  transport: http(),
+  transport: http(
+    "https://base-mainnet.g.alchemy.com/v2/0kk4LI5KTKHA5RZ0DK5sjyzlcetJGx7R",
+  ),
 });
 
 export const abi = [
@@ -421,12 +423,18 @@ export const getLastYoinkedBy = () => {
   });
 };
 
-export const getTotalYoinks = () => {
+export const getTotalYoinks = async () => {
   return publicClient.readContract({
     address: YOINK_ADDRESS,
     abi: abi,
     functionName: "totalYoinks",
   });
+};
+
+export type ScoreByAddressResult = {
+  yoinks: bigint;
+  time: bigint;
+  lastYoinkedAt: bigint;
 };
 
 export const getScoreByAddress = (address: Address) => {
@@ -456,14 +464,14 @@ type YoinkEvent = {
 
 export const getIndexerYoinks = async (): Promise<YoinkEvent[]> => {
   const response = await fetch(
-    "https://yoink-indexer-production.up.railway.app/recent"
+    "https://yoink-indexer-production.up.railway.app/recent",
   );
   return response.json();
 };
 
 export const processRecentYoinks = (
   events: YoinkEvent[],
-  count: number = 10
+  count: number = 10,
 ) => {
   return events.slice(0, count).map((event) => ({
     by: event.by as Address,
@@ -476,14 +484,23 @@ export const getRecentYoinks = async (count: number = 10) => {
   return processRecentYoinks(events, count);
 };
 
-type LeaderboardEntry = {
+export type LeaderboardEntry = {
   address: string;
   yoinks: number;
 };
 
+export type LeaderboardEntryWithUserData = {
+  address: string;
+  yoinks: number;
+  username?: string;
+  pfpUrl?: string;
+};
+
+export type LeaderboardResult = LeaderboardEntryWithUserData[];
+
 export const getLeaderboard = async (count: number = 5) => {
   const response = await fetch(
-    "https://yoink-indexer-production.up.railway.app/leaderboard"
+    "https://yoink-indexer-production.up.railway.app/leaderboard",
   );
   const leaderboard: LeaderboardEntry[] = await response.json();
 
@@ -501,6 +518,7 @@ export const getLeaderboard = async (count: number = 5) => {
     return {
       ...entry,
       username: username,
+      pfpUrl: userData && userData[0] && userData[0].pfp_url,
     };
   });
 };

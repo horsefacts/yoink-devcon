@@ -12,8 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className="bg-[#F5F0EC]">
+      <body className="max-w-screen-sm mx-auto overflow-x-hidden">
+        {children}
+      </body>
     </html>
   );
 }
