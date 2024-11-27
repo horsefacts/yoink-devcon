@@ -11,7 +11,7 @@ const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
 const route = `${domain}/framesV2`;
 const frame = {
   version: "next",
-  imageUrl: `${route}/frame-image`,
+  imageUrl: `${route}/opengraph-image`,
   button: {
     title: "🚩 Start",
     action: {
