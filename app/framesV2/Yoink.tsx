@@ -92,7 +92,7 @@ function YoinkStart({
       await sendTransaction({
         to: txData.params.to,
         data: txData.params.data,
-        // chainId: base.id,
+        chainId: base.id,
       });
 
       sdk.actions.setPrimaryButton({ text: "Yoinking", hidden: true });
