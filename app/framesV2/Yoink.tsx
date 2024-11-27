@@ -238,7 +238,10 @@ function YoinkStart({
         </div>
         {txReceiptResult.isLoading || txReceiptResult.isSuccess ? (
           <div className="text-center text-2xl font-black text-[#BA181B]">
-            Yoinking the flag from {lastYoinkedBy}… 🚩
+            <span className="animate-pulse">
+              Yoinking the flag from {lastYoinkedBy}
+            </span>
+            <span className="inline-block animate-spin">🚩</span>
           </div>
         ) : (
           <>
