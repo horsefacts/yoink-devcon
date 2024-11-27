@@ -4,9 +4,7 @@ import { client, truncateAddress } from "./neynar";
 
 export const publicClient = createPublicClient({
   chain: base,
-  transport: http(
-    "https://base-mainnet.g.alchemy.com/v2/0kk4LI5KTKHA5RZ0DK5sjyzlcetJGx7R",
-  ),
+  transport: http(process.env.ALCHEMY_RPC ?? "https://mainnet.base.org"),
 });
 
 export const abi = [
