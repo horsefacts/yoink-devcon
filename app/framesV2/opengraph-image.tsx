@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getRecentYoinkers, getTotalYoinks } from "../../lib/contract";
 
+export const dynamic = "force-dynamic";
 export const alt = "yoink the flag";
 export const size = {
   width: 1260,
@@ -8,7 +9,7 @@ export const size = {
 };
 
 export const contentType = "image/png";
-export const revalidate = 60;
+export const revalidate = 300;
 
 export default async function Image() {
   const totalYoinks = await getTotalYoinks();
@@ -49,6 +50,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    },
+    }
   );
 }
