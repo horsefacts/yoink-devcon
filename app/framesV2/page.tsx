@@ -10,16 +10,15 @@ const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
 const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
 const route = `${domain}/framesV2`;
 const frame = {
-  version: "2",
-  image: {
-    url: `${route}/opengraph-image`,
-    aspectRatio: "1:1",
-  },
-  cta: {
+  imageUrl: `${route}/opengraph-image`,
+  button: {
     title: "🚩 Start",
     action: {
-      type: "launch_app_frame",
-      target: route,
+      type: "launch_frame",
+      name: "Yoink!",
+      url: route,
+      splashImageUrl: "https://yoink.party/logo.png",
+      splashBackgroundColor: "#f7f7f7",
     },
   },
 };
