@@ -33,7 +33,7 @@ export default async function Image() {
                 key={i}
                 tw="flex overflow-hidden rounded-full h-24 w-24 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-10 first:ml-0"
               >
-                {user.pfpUrl && (
+                {typeof user.pfpUrl !== "undefined" && (
                   <img
                     src={user.pfpUrl}
                     tw="object-cover w-full h-full"
@@ -51,6 +51,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    },
+    }
   );
 }
