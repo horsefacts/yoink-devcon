@@ -523,3 +523,41 @@ export const getLeaderboard = async (count: number = 5) => {
     };
   });
 };
+
+export const getRecentYoinkers = async (
+  count: number = 5,
+): Promise<LeaderboardResult> => {
+  const events = await getIndexerYoinks();
+  const recentYoinks = processRecentYoinks(events, count);
+
+  const yoinkCounts = new Map<string, number>();
+  recentYoinks.forEach((yoink) => {
+    const byCount = yoinkCounts.get(yoink.by) || 0;
+    yoinkCounts.set(yoink.by, byCount + 1);
+  });
+
+  const entries: LeaderboardEntry[] = Array.from(yoinkCounts.entries()).map(
+    ([address, yoinks]) => ({
+      address,
+      yoinks,
+    }),
+  );
+
+  entries.sort((a, b) => b.yoinks - a.yoinks);
+
+  const addressesToLookup = entries.map((entry) => entry.address);
+  const users = await client.fetchBulkUsersByEthereumAddress(addressesToLookup);
+
+  return entries.map((entry) => {
+    const userData = users[entry.address.toLowerCase()];
+    const username =
+      userData && userData[0]
+        ? userData[0].username
+        : truncateAddress(entry.address);
+    return {
+      ...entry,
+      username: username,
+      pfpUrl: userData && userData[0] && userData[0].pfp_url,
+    };
+  });
+};
