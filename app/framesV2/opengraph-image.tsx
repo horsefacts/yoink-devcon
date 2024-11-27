@@ -24,16 +24,16 @@ export default async function Image() {
         }}
       >
         <div tw="flex flex-col items-center p-12 rounded-xl">
-          <div tw="flex flex-row mt-[200px]">
+          <div tw="flex flex-row mt-[240px]">
             {yoinkers.map((user, i) => (
               <div
                 key={i}
-                tw="flex overflow-hidden rounded-full h-32 w-32 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-12 first:ml-0"
+                tw="flex overflow-hidden rounded-full h-28 w-28 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-12 first:ml-0"
               >
                 {user.pfpUrl && (
                   <img
                     src={user.pfpUrl}
-                    tw="w-full h-full object-cover"
+                    tw="object-cover w-full h-full"
                     alt={user.username}
                   />
                 )}
@@ -48,6 +48,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    },
+    }
   );
 }
