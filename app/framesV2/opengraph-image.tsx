@@ -14,6 +14,7 @@ export const revalidate = 300;
 export default async function Image() {
   const totalYoinks = await getTotalYoinks();
   const yoinkers = await getRecentYoinkers(10);
+  console.log(yoinkers);
 
   return new ImageResponse(
     (
@@ -26,7 +27,7 @@ export default async function Image() {
         }}
       >
         <div tw="flex flex-col items-center p-12 rounded-xl">
-          <div tw="flex flex-row mt-[240px]">
+          <div tw="flex flex-row mt-[300px]">
             {yoinkers.map((user, i) => (
               <div
                 key={i}
@@ -42,14 +43,14 @@ export default async function Image() {
               </div>
             ))}
           </div>
-          <div tw="flex text-4xl">
-            <span tw="mr-2">{totalYoinks}</span> yoinks
+          <div tw="flex text-[50px] mt-4">
+            <span tw="mr-2">{totalYoinks}</span> flags yoinked
           </div>
         </div>
       </div>
     ),
     {
       ...size,
-    },
+    }
   );
 }
