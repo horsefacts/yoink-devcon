@@ -7,8 +7,8 @@
   "frame": {
     "version": "0.0.0",
     "name": "Yoink!",
-    "icon": "https://yoink.party/logo.png",
-    "splashImage": "https://yoink.party/logo.png",
+    "iconUrl": "https://yoink.party/logo.png",
+    "splashImageUrl": "https://yoink.party/logo.png",
     "splashBackgroundColor": "#f7f7f7",
     "homeUrl": "https://yoink.party/framesV2/"
   }
