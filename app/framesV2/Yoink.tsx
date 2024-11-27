@@ -141,10 +141,11 @@ function YoinkStart({
     } catch (e) {
       if (e instanceof BaseError) {
         if (
+          e.details &&
           // Coinbase Wallet
-          e.details.startsWith("User denied request") ||
-          // Rainbow
-          e.details.startsWith("User rejected request")
+          (e.details.startsWith("User denied request") ||
+            // Rainbow
+            e.details.startsWith("User rejected request"))
         ) {
           // no-op
           return;
