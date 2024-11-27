@@ -30,7 +30,7 @@ export default async function Image() {
             {yoinkers.map((user, i) => (
               <div
                 key={i}
-                tw="flex overflow-hidden rounded-full h-28 w-28 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-12 first:ml-0"
+                tw="flex overflow-hidden rounded-full h-24 w-24 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-10 first:ml-0"
               >
                 {user.pfpUrl && (
                   <img
@@ -50,6 +50,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    }
+    },
   );
 }
