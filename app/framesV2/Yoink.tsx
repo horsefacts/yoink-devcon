@@ -238,11 +238,12 @@ function YoinkStart({
         </div>
         {txReceiptResult.isLoading || txReceiptResult.isSuccess ? (
           <div className="text-center text-2xl font-black text-[#BA181B]">
-            <span className="inline-block animate-spin">🚩</span>{" "}
-            <span className="animate-pulse">
-              Yoinking the flag from {lastYoinkedBy}
-            </span>{" "}
-            <span className="inline-block animate-spin">🚩</span>
+            <div>Yoinking the flag from</div>
+            <div>
+              <span className="inline-block animate-spin">🚩</span>{" "}
+              <span className="animate-pulse">{lastYoinkedBy}</span>{" "}
+              <span className="inline-block animate-spin">🚩</span>
+            </div>
           </div>
         ) : (
           <>
@@ -252,14 +253,14 @@ function YoinkStart({
             <div className="mb-1 font-bold text-sm text-center">
               {lastYoinkedBy} has the flag
             </div>
-            {isWarpcastUsername(lastYoinkedBy) && (
+            {/* isWarpcastUsername(lastYoinkedBy) && (
               <button
                 onClick={handleProfileClick}
                 className="my-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg hover:bg-[#A11518] transition-colors duration-200 text-sm font-semibold"
               >
                 View Profile
               </button>
-            )}
+            ) */}
             <div className="text-sm">
               The flag has been yoinked{" "}
               <span className="text-[#BA181B]">{totalYoinks} times</span>
