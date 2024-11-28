@@ -52,11 +52,7 @@ export function RecentActivity() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="px-3">
-        <div className="text-sm">Loading...</div>
-      </div>
-    );
+    return <div className="px-3"></div>;
   }
 
   if (error) {
