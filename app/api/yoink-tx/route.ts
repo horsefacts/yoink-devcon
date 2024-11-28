@@ -9,6 +9,8 @@ import { transaction } from "frames.js/core";
 import { abi, YOINK_ADDRESS, simulateYoink } from "../../../lib/contract";
 import { formatDuration } from "../../../lib/time";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

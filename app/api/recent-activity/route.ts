@@ -8,6 +8,8 @@ export type YoinkActivityResponse = {
   timestamp: number;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const recentYoinks = await getRecentYoinks(10);
