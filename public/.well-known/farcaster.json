@@ -10,6 +10,7 @@
     "iconUrl": "https://yoink.party/logo.png",
     "splashImageUrl": "https://yoink.party/logo.png",
     "splashBackgroundColor": "#f7f7f7",
-    "homeUrl": "https://yoink.party/framesV2/"
+    "homeUrl": "https://yoink.party/framesV2/",
+    "webhookUrl": "https://yoink.party/api/webhook"
   }
 }
