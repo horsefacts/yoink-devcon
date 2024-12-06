@@ -64,7 +64,7 @@ export function RecentActivity() {
   }
 
   return (
-    <div className="px-3">
+    <div className="px-3 w-full">
       <div className="text-xs">
         {yoinks.map((yoink, index) => (
           <div
