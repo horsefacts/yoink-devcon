@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import sdk from "@farcaster/frame-sdk";
+import sdk, { FrameNotificationDetails } from "@farcaster/frame-sdk";
 import { useChainId, useConnect, useSwitchChain } from "wagmi";
 import { revalidateFramesV2 } from "./actions";
 
@@ -194,6 +194,14 @@ function YoinkStart({
     }
   }, [account.address, router, txReceiptResult.isSuccess]);
 
+  const addFrame = useCallback(async () => {
+    try {
+      await sdk.actions.addFrame();
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
       sdk.actions.setPrimaryButton({ text: "", hidden: true });
@@ -219,7 +227,7 @@ function YoinkStart({
   }
 
   return (
-    <div className="mt-6 p-3 flex-col items-center">
+    <div className="p-3 pt-9 flex flex-col items-center h-[100vh] justify-between">
       <div></div>
       <div className="pb-8 px-8 flex flex-col items-center">
         <div className="relative mb-1">
@@ -270,6 +278,8 @@ function YoinkStart({
         )}
       </div>
       <RecentActivity />
+      <div className="flex flex-col grow"></div>
+      <div className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center" onClick={addFrame}>Add Frame</div>
     </div>
   );
 }
