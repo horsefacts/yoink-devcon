@@ -279,7 +279,12 @@ function YoinkStart({
       </div>
       <RecentActivity />
       <div className="flex flex-col grow"></div>
-      <div className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center" onClick={addFrame}>Add Frame</div>
+      <div
+        className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
+        onClick={addFrame}
+      >
+        Add Frame
+      </div>
     </div>
   );
 }

@@ -823,20 +823,20 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/frame-core@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.7.tgz#e113291525898df21c183935d145d95123e0f4e1"
-  integrity sha512-hN5YVoFKVy2erc8HeYmKfsJM+7yCvNU9HjTWlf9BLf9bQ1aGAIYSk5ozjsk62ob3qeQrgAyaXBPKTGarOt1Qew==
+"@farcaster/frame-core@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.8.tgz#9beb187579788f8cbd97bf7e4669a889f72d5e8d"
+  integrity sha512-89kJFeWnv0d2EPKnjN4j5CwBKxu4rtju6hJh/MtyK82lDxJsS6w4XB4BPw82udrb9rX30ebTCW/VaILhXCWKjQ==
   dependencies:
     ox "^0.4.0"
     zod "^3.23.8"
 
-"@farcaster/frame-sdk@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@farcaster/frame-sdk/-/frame-sdk-0.0.8.tgz#854f7ea55b30f5cff54fc6dc9992caf2c4bc052e"
-  integrity sha512-KSEGbXAbmv03pkNARHiChSHr/NSaZUIr2P5kB6+x6Qlr38Oufyj1cULfXOQHDAuQTXKQGK3E2T+wupvx1FvRnA==
+"@farcaster/frame-sdk@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@farcaster/frame-sdk/-/frame-sdk-0.0.9.tgz#1e73a3803bfdb3a0f1769be1052e5f969ceeaecc"
+  integrity sha512-DuBxddP1TD0xRaqSCX6gacaatwy9hCjmyC1ED7LMBGo9Zm97N2R6wdJmP9UWM4S2z1AyVx30qY6+kLB/gErroQ==
   dependencies:
-    "@farcaster/frame-core" "^0.0.7"
+    "@farcaster/frame-core" "^0.0.8"
     comlink "^4.4.2"
     eventemitter3 "^5.0.1"
     ox "^0.4.0"
@@ -3080,6 +3080,13 @@
   version "1.25.1"
   resolved "https://registry.yarnpkg.com/@upstash/redis/-/redis-1.25.1.tgz#361656a326b40d5816640ae4335a8b1bbbb0d238"
   integrity sha512-ACj0GhJ4qrQyBshwFgPod6XufVEfKX2wcaihsEvSdLYnY+m+pa13kGt1RXm/yTHKf4TQi/Dy2A8z/y6WUEOmlg==
+  dependencies:
+    crypto-js "^4.2.0"
+
+"@upstash/redis@^1.34.3":
+  version "1.34.3"
+  resolved "https://registry.yarnpkg.com/@upstash/redis/-/redis-1.34.3.tgz#df0338f4983bba5141878e851be4fced494b44a0"
+  integrity sha512-VT25TyODGy/8ljl7GADnJoMmtmJ1F8d84UXfGonRRF8fWYJz7+2J6GzW+a6ETGtk4OyuRTt7FRSvFG5GvrfSdQ==
   dependencies:
     crypto-js "^4.2.0"
 

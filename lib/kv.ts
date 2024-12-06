@@ -1,16 +1,18 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
+});
 
 type Yoinker = { address: string; timestamp: number };
 
 export const setCurrentYoinker = async (address: string, timestamp: number) => {
-  await kv.set<string>(
-    "current-yoinker",
-    JSON.stringify({ address, timestamp }),
-  );
+  await redis.set("current-yoinker", JSON.stringify({ address, timestamp }));
 };
 
 export const getCurrentYoinker = async () => {
-  const current = await kv.get<string>("current-yoinker");
+  const current = await redis.get<string>("current-yoinker");
   if (current != null) {
     return JSON.parse(current) as Yoinker;
   }
@@ -22,9 +24,9 @@ export const setNotificationTokenForAddress = async (
   address: string,
   token: string,
 ) => {
-  await kv.set<string>("notification-" + address, token);
+  await redis.set("notification-" + address, token);
 };
 
 export const getNotificationTokenForAddress = async (address: string) => {
-  return await kv.get<string>("notification-" + address);
+  return await redis.get<string>("notification-" + address);
 };
