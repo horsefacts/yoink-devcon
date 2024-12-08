@@ -9,6 +9,8 @@ export const config = createConfig({
   connectors: [frameConnector()],
   ssr: window.process === undefined,
   transports: {
-    [base.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_RPC),
+    [base.id]: http(
+      process.env.NEXT_PUBLIC_ALCHEMY_RPC ?? "https://mainnet.base.org",
+    ),
   },
 });

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import sdk, { FrameNotificationDetails } from "@farcaster/frame-sdk";
 import { useChainId, useConnect, useSwitchChain } from "wagmi";
-import { revalidateFramesV2 } from "./actions";
+import { encodeFunctionData } from "viem";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
@@ -18,6 +18,8 @@ import {
 import { base } from "viem/chains";
 import { BaseError } from "viem";
 import { RecentActivity } from "./RecentActivity";
+import { revalidateFramesV2 } from "./actions";
+import { PrimaryButton } from "../components/PrimaryButton";
 
 export default function Yoink(props: {
   lastYoinkedBy: string;
@@ -61,12 +63,20 @@ function YoinkStart({
   const [timeLeft, setTimeLeft] = useState<number>();
   const pfp = pfpUrl ?? FlagAvatar;
 
+  const [buttonState, setButtonState] = useState({
+    text: "Yoink",
+    disabled: false,
+    loading: false,
+    hidden: false,
+  });
+
   const yoinkOnchain = useCallback(async () => {
     try {
-      sdk.actions.setPrimaryButton({
+      setButtonState({
         text: "Yoink",
         disabled: true,
         loading: true,
+        hidden: false,
       });
 
       const params = new URLSearchParams({
@@ -78,13 +88,22 @@ function YoinkStart({
         const error = await res.json();
 
         if (error.timeLeft) {
-          sdk.actions.setPrimaryButton({ text: "Yoink", disabled: true });
+          setButtonState({
+            text: "Yoink",
+            disabled: true,
+            loading: false,
+            hidden: false,
+          });
           setTimeLeft(error.timeLeft);
         } else {
-          sdk.actions.setPrimaryButton({ text: "Yoink" });
+          setButtonState({
+            text: "Yoink",
+            disabled: false,
+            loading: false,
+            hidden: false,
+          });
           alert(error.message);
         }
-
         return;
       }
 
@@ -94,19 +113,26 @@ function YoinkStart({
         data: txData.params.data,
       });
 
-      sdk.actions.setPrimaryButton({ text: "Yoinking", hidden: true });
+      setButtonState({
+        text: "Yoinking",
+        disabled: true,
+        loading: true,
+        hidden: true,
+      });
     } catch (e) {
-      sdk.actions.setPrimaryButton({ text: "Yoink" });
+      setButtonState({
+        text: "Yoink",
+        disabled: false,
+        loading: false,
+        hidden: false,
+      });
 
       if (e instanceof BaseError) {
         if (
           e.details &&
-          // Coinbase Wallet
           (e.details.startsWith("User denied request") ||
-            // Rainbow
             e.details.startsWith("User rejected request"))
         ) {
-          // no-op
           return;
         }
       }
@@ -164,7 +190,6 @@ function YoinkStart({
   ]);
 
   const init = useCallback(async () => {
-    await sdk.actions.setPrimaryButton({ text: "Yoink" });
     sdk.actions.ready();
   }, []);
 
@@ -183,7 +208,12 @@ function YoinkStart({
 
   useEffect(() => {
     if (txReceiptResult.isLoading) {
-      sdk.actions.setPrimaryButton({ text: "Yoinking", hidden: true });
+      setButtonState({
+        text: "Yoinking",
+        hidden: true,
+        disabled: false,
+        loading: false,
+      });
     }
   }, [txReceiptResult.isLoading]);
 
@@ -204,7 +234,12 @@ function YoinkStart({
 
   useEffect(() => {
     return () => {
-      sdk.actions.setPrimaryButton({ text: "", hidden: true });
+      setButtonState({
+        text: "",
+        hidden: true,
+        loading: false,
+        disabled: false,
+      });
     };
   }, []);
 
@@ -285,6 +320,16 @@ function YoinkStart({
       >
         Add Frame
       </div>
+      <div className="mt-4 w-full">
+        <PrimaryButton
+          onClick={handleYoink}
+          disabled={buttonState.disabled}
+          loading={buttonState.loading}
+          hidden={buttonState.hidden}
+        >
+          {buttonState.text}
+        </PrimaryButton>
+      </div>
     </div>
   );
 }
@@ -316,7 +361,14 @@ function TimeLeft({
             YOINK!
           </div>
         </div>
-        <AppFrameButton text="Yoink" onClick={yoink} />
+        <PrimaryButton
+          onClick={yoink}
+          disabled={false}
+          loading={false}
+          hidden={false}
+        >
+          Yoink
+        </PrimaryButton>
       </>
     );
   }

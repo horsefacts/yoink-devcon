@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const address = searchParams.get("address");
-    if (!address) {
+    if (!address || address === "unknown") {
       return NextResponse.json(
         {
           message: "Missing address",
