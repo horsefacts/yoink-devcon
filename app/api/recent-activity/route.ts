@@ -16,6 +16,7 @@ import {
   truncateAddress,
 } from "../../../lib/neynar";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +75,7 @@ async function processNotifications(
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              notificationId: yoinker.id,
+              notificationId: uuidv4(),
               title: "You've been Yoinked!",
               body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
               targetUrl: "https://yoink.party/framesV2/",
@@ -82,8 +83,6 @@ async function processNotifications(
             }),
           },
         );
-        console.log(res.status);
-        console.log(await res.json());
 
         await markNotificationAsSent(yoinker.id);
       }
