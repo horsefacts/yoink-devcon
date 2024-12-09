@@ -4,9 +4,9 @@ import { scheduleReminder } from "../../../lib/kv";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { address, timeLeft } = body;
+    const { fid, timeLeft } = body;
 
-    if (!address || typeof timeLeft !== "number") {
+    if (!fid || typeof timeLeft !== "number") {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const sendAt = Math.floor(Date.now() / 1000) + timeLeft;
-    await scheduleReminder(address, sendAt);
+    await scheduleReminder(fid, sendAt);
 
     return NextResponse.json({ success: true });
   } catch (error) {

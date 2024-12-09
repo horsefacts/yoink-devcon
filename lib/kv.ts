@@ -14,61 +14,77 @@ export type NotificationState =
   | "failed"; // Delivery failed
 
 type ReminderId = `reminder:${string}:${string}`;
+type YoinkId = `yoink:${string}`;
+type NotificationId = ReminderId | YoinkId;
 
-export const setNotificationTokenForAddress = async (
-  address: string,
+export const setNotificationTokenForFid = async (
+  fid: number,
   token: string,
 ) => {
-  return redis.set(`tokens:${address.toLowerCase()}`, token);
+  return redis.set(`tokens:fid:${fid}`, token);
 };
 
-export const getNotificationTokenForAddress = async (address: string) => {
-  return redis.get<string>(`tokens:${address.toLowerCase()}`);
+export const getNotificationTokenForFid = async (fid: number) => {
+  return redis.get<string>(`tokens:fid:${fid}`);
 };
 
 export const setNotificationState = async (
   type: NotificationType,
   id: string,
   state: NotificationState,
-  notificationId?: string,
+  apiUUID?: string,
 ) => {
+  const notificationId =
+    type === "yoink"
+      ? (`yoink:${id}` as YoinkId)
+      : (`reminder:${id}` as ReminderId);
+
   const multi = redis.multi();
 
-  multi.set(`notification:state:${id}`, state);
+  multi.set(`notification:${type}:state:${notificationId}`, state);
 
   if (
     type === "reminder" &&
     (state === "sent" || state === "failed" || state === "skipped")
   ) {
-    multi.zrem("notification:scheduled_reminders", id);
+    multi.zrem("notification:scheduled_reminders", notificationId);
   }
 
-  if (state === "sent" && notificationId) {
-    multi.set(`notification:uuid:${notificationId}`, id);
-    multi.expire(`notification:state:${id}`, 60 * 60 * 24 * 30);
+  if (state === "sent" && apiUUID) {
+    multi.set(`notification:${type}:uuid:${apiUUID}`, notificationId);
+    multi.expire(
+      `notification:${type}:state:${notificationId}`,
+      60 * 60 * 24 * 30,
+    );
   }
 
   return multi.exec();
 };
 
-export const getYoinkIdFromNotificationId = async (notificationId: string) => {
-  return redis.get<string>(`notification:uuid:${notificationId}`);
+export const getYoinkIdFromApiUUID = async (apiUUID: string) => {
+  return redis.get<string>(`notification:yoink:uuid:${apiUUID}`);
 };
 
 export const markNotificationPending = async (
   type: NotificationType,
   id: string,
 ): Promise<boolean> => {
-  const result = await redis.setnx(`notification:state:${id}`, "pending");
+  const notificationId =
+    type === "yoink"
+      ? (`yoink:${id}` as YoinkId)
+      : (`reminder:${id}` as ReminderId);
+
+  const result = await redis.setnx(
+    `notification:${type}:state:${notificationId}`,
+    "pending",
+  );
   return result === 1;
 };
 
 export const scheduleReminder = async (
-  address: string,
+  fid: number,
   sendAt: number,
 ): Promise<string> => {
-  const addressLower = address.toLowerCase();
-
   const existingReminders = await redis.zrange<ReminderId[]>(
     "notification:scheduled_reminders",
     "-inf",
@@ -79,23 +95,21 @@ export const scheduleReminder = async (
   );
 
   const existingReminder = existingReminders.find((id) => {
-    const [_, reminderAddress] = id.split(":");
-    return reminderAddress?.toLowerCase() === addressLower;
+    const [_, reminderFid] = id.split(":");
+    return reminderFid === fid.toString();
   });
 
   const multi = redis.multi();
-  const id = `reminder:${address}:${sendAt}`;
+  const id = `reminder:${fid}:${sendAt}`;
 
-  // If there's an existing reminder, remove it and its state
   if (existingReminder) {
     multi
-      .del(`notification:state:${existingReminder}`)
+      .del(`notification:reminder:state:${existingReminder}`)
       .zrem("notification:scheduled_reminders", existingReminder);
   }
 
-  // Add the new reminder
   multi
-    .set(`notification:state:${id}`, "scheduled")
+    .set(`notification:reminder:state:${id}`, "scheduled")
     .zadd("notification:scheduled_reminders", { score: sendAt, member: id });
 
   await multi.exec();
@@ -115,16 +129,16 @@ export const getScheduledReminders = async () => {
     },
   );
 
-  const reminders: Array<{ id: string; address: string; sendAt: number }> = [];
+  const reminders: Array<{ id: string; fid: number; sendAt: number }> = [];
 
   for (const id of dueReminders) {
-    const state = await redis.get(`notification:state:${id}`);
+    const state = await redis.get(`notification:reminder:state:${id}`);
     if (state === "scheduled") {
-      const [_, address, sendAtStr] = id.split(":");
-      if (address && sendAtStr) {
+      const [_, fid, sendAtStr] = id.split(":");
+      if (fid && sendAtStr) {
         reminders.push({
           id,
-          address,
+          fid: parseInt(fid),
           sendAt: parseInt(sendAtStr),
         });
       }

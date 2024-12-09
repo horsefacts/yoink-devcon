@@ -3,7 +3,6 @@ import { useCallback, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
 
 export function RemindButton({ timeLeft }: { timeLeft: number }) {
-  const account = useAccount();
   const [status, setStatus] = useState<
     "idle" | "success" | "error" | "loading"
   >("idle");
@@ -18,13 +17,15 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
 
       if (result.added) {
         if (result.notificationDetails) {
+          const context = await sdk.context;
+
           await fetch("/api/notification-token", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              address: account.address,
+              fid: context.user.fid,
               token: result.notificationDetails.token,
             }),
           });
@@ -35,7 +36,7 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              address: account.address,
+              fid: context.user.fid,
               timeLeft,
             }),
           });
@@ -52,7 +53,7 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
       setStatus("error");
       setErrorMessage("Failed to schedule reminder");
     }
-  }, [account.address, timeLeft, status]);
+  }, [timeLeft, status]);
 
   return (
     <div className="flex flex-col items-center gap-2">

@@ -4,9 +4,9 @@ import {
   getTotalYoinks,
 } from "../../../lib/contract";
 import {
-  getNotificationTokenForAddress,
   setNotificationState,
   markNotificationPending,
+  getNotificationTokenForFid,
 } from "../../../lib/kv";
 import {
   getUserByAddress,
@@ -45,9 +45,13 @@ async function processNotifications(
       const acquired = await markNotificationPending("yoink", yoink.id);
       if (!acquired) continue;
 
-      const notificationToken = await getNotificationTokenForAddress(
-        yoink.from,
-      );
+      const user = await getUserByAddress(yoink.from);
+      if (!user?.fid) {
+        await setNotificationState("yoink", yoink.id, "skipped");
+        continue;
+      }
+
+      const notificationToken = await getNotificationTokenForFid(user.fid);
       if (!notificationToken) {
         await setNotificationState("yoink", yoink.id, "skipped");
         continue;
@@ -58,7 +62,7 @@ async function processNotifications(
           (activity) => activity.by && activity.timestamp === yoink.timestamp,
         )?.by ?? "Someone";
 
-      const notificationId = uuidv4();
+      const apiUUID = uuidv4();
 
       try {
         await fetch("https://api.warpcast.com/v1/frame-notifications", {
@@ -67,14 +71,14 @@ async function processNotifications(
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            notificationId,
+            notificationId: apiUUID,
             title: "You've been Yoinked!",
             body: `${username} yoinked the flag from you. Yoink it back!`,
             targetUrl: "https://yoink.party/framesV2/",
             tokens: [notificationToken],
           }),
         });
-        await setNotificationState("yoink", yoink.id, "sent", notificationId);
+        await setNotificationState("yoink", yoink.id, "sent", apiUUID);
       } catch (error) {
         console.error("Error sending notification:", error);
         await setNotificationState("yoink", yoink.id, "failed");
