@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, Suspense } from "react";
-import sdk from "@farcaster/frame-sdk";
+import sdk, { FrameContext } from "@farcaster/frame-sdk";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
@@ -57,10 +57,15 @@ function YoinkStart({
   const account = useAccount();
   const { data: hash } = useSendTransaction();
   const txReceiptResult = useWaitForTransactionReceipt({ hash });
+
+  const [context, setContext] = useState<FrameContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
+
   const pfp = pfpUrl ?? FlagAvatar;
 
   const init = useCallback(async () => {
+    const context = await sdk.context;
+    setContext(context);
     sdk.actions.ready();
   }, []);
 
@@ -69,17 +74,6 @@ function YoinkStart({
       void init();
     }
   }, [init, pfp]);
-
-  useEffect(() => {
-    sdk.on("primaryButtonClicked", () => {
-      setTimeLeft(undefined);
-    });
-    return () => {
-      sdk.off("primaryButtonClicked", () => {
-        setTimeLeft(undefined);
-      });
-    };
-  }, []);
 
   useEffect(() => {
     if (txReceiptResult.isLoading) {
@@ -96,11 +90,24 @@ function YoinkStart({
 
   const addFrame = useCallback(async () => {
     try {
-      await sdk.actions.addFrame();
+      const result = await sdk.actions.addFrame();
+
+      if (result.added && result?.notificationDetails) {
+        await fetch("/api/notification-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: account.address,
+            token: result.notificationDetails.token,
+          }),
+        });
+      }
     } catch (error) {
-      alert(`Error: ${error}`);
+      alert("Failed to store notification token.");
     }
-  }, []);
+  }, [account.address]);
 
   const isWarpcastUsername = (username: string) => !username.includes("…");
 
@@ -169,12 +176,14 @@ function YoinkStart({
       </div>
       <RecentActivity />
       <div className="flex flex-col grow"></div>
-      <div
-        className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
-        onClick={addFrame}
-      >
-        Add Frame
-      </div>
+      {context?.user.fid === 20943 && (
+        <div
+          className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
+          onClick={addFrame}
+        >
+          Add Frame
+        </div>
+      )}
       <div className="mt-4 w-full">
         <YoinkButton
           onTimeLeft={setTimeLeft}
