@@ -18,6 +18,7 @@ import { revalidateFramesV2 } from "./actions";
 import { YoinkButton } from "../components/YoinkButton";
 import { useYoinkData } from "../hooks/api";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { useLongPress } from "../hooks/useLongPress";
 
 export default function Yoink() {
   return (
@@ -119,6 +120,8 @@ function YoinkStart({
     sdk.actions.openUrl(`https://warpcast.com/${lastYoinkedBy}`);
   }, [lastYoinkedBy]);
 
+  const longPressHandlers = useLongPress(addFrame);
+
   if (typeof timeLeft === "number") {
     return (
       <div className="mt-3 p-3">
@@ -132,7 +135,10 @@ function YoinkStart({
       <div></div>
       <div className="pb-8 px-8 flex flex-col items-center">
         <div className="relative mb-1">
-          <div className="flex overflow-hidden rounded-full h-[112px] w-[112px]">
+          <div
+            className="flex overflow-hidden rounded-full h-[112px] w-[112px]"
+            {...longPressHandlers}
+          >
             <Image
               src={pfpUrl ?? FlagAvatar}
               className="w-full h-full object-cover object-center"
@@ -180,14 +186,14 @@ function YoinkStart({
       </div>
       <RecentActivity />
       <div className="flex flex-col grow"></div>
-      {context?.user.fid === 3621 && (
+      {/*
         <div
           className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
           onClick={addFrame}
         >
           Add Frame
         </div>
-      )}
+      */}
       <div className="mt-4 w-full">
         <YoinkButton
           onTimeLeft={setTimeLeft}
