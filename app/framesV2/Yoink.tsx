@@ -163,7 +163,7 @@ function YoinkStart({
         ) : (
           <>
             <div
-              className="flex text-2xl font-black text-[#BA181B] uppercase mb-1"
+              className="flex text-2xl font-black text-[#BA181B] uppercase mb-1 select-none touch-none"
               {...longPressHandlers}
             >
               Yoink!
