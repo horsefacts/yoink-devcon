@@ -2,10 +2,13 @@ import Image from "next/image";
 import { Hex } from "viem";
 import { intervalToDuration, Duration, formatDistance } from "date-fns";
 
-import { getScoreByAddress, getTotalYoinks } from "../../lib/contract";
+import { getScoreByAddress } from "../../lib/contract";
 import { getUserByAddress, truncateAddress } from "../../lib/neynar";
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
+import { TotalYoinks } from "./TotalYoinks";
+
+export const revalidate = 300;
 
 export async function UserHeader(props: {
   address: string;
@@ -28,10 +31,9 @@ async function UserHeaderInner({
   hasFlag?: boolean;
   isMe?: boolean;
 }) {
-  const [scoreByAddress, userByAddress, totalYoinks] = await Promise.all([
+  const [scoreByAddress, userByAddress] = await Promise.all([
     getScoreByAddress(address as Hex),
     getUserByAddress(address),
-    getTotalYoinks(),
   ]);
 
   const username = userByAddress?.username ?? truncateAddress(address);
@@ -107,9 +109,7 @@ async function UserHeaderInner({
           <div className="text-xs text-[#8B99A4]">Time held</div>
         </div>
       </div>
-      <div className="text-sm text-center text-[#8B99A4]">
-        The flag has been yoinked {totalYoinks.toLocaleString()} times
-      </div>
+      <TotalYoinks />
     </div>
   );
 }

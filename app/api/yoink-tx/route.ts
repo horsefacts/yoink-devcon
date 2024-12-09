@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         { status: 400 },
       );
     }
-    await simulateYoink(address as Hex);
+    const res = await simulateYoink(address as Hex);
   } catch (err) {
     if (err instanceof BaseError) {
       const revertError = err.walk(

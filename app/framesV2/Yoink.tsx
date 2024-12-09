@@ -3,9 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import sdk, { FrameNotificationDetails } from "@farcaster/frame-sdk";
-import { useChainId, useConnect, useSwitchChain } from "wagmi";
-import { encodeFunctionData } from "viem";
+import sdk from "@farcaster/frame-sdk";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
@@ -15,11 +13,9 @@ import {
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { base } from "viem/chains";
-import { BaseError } from "viem";
 import { RecentActivity } from "./RecentActivity";
 import { revalidateFramesV2 } from "./actions";
-import { PrimaryButton } from "../components/PrimaryButton";
+import { YoinkButton } from "../components/YoinkButton";
 
 export default function Yoink(props: {
   lastYoinkedBy: string;
@@ -51,143 +47,11 @@ function YoinkStart({
   totalYoinks: string;
 }) {
   const router = useRouter();
-
-  const { connectors, connectAsync } = useConnect();
-  const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
   const account = useAccount();
-  const { data: hash, sendTransactionAsync: sendTransaction } =
-    useSendTransaction();
+  const { data: hash } = useSendTransaction();
   const txReceiptResult = useWaitForTransactionReceipt({ hash });
-
   const [timeLeft, setTimeLeft] = useState<number>();
   const pfp = pfpUrl ?? FlagAvatar;
-
-  const [buttonState, setButtonState] = useState({
-    text: "Yoink",
-    disabled: false,
-    loading: false,
-    hidden: false,
-  });
-
-  const yoinkOnchain = useCallback(async () => {
-    try {
-      setButtonState({
-        text: "Yoink",
-        disabled: true,
-        loading: true,
-        hidden: false,
-      });
-
-      const params = new URLSearchParams({
-        address: account.address ?? "unknown",
-      });
-
-      const res = await fetch(`/api/yoink-tx?${params}`);
-      if (res.status !== 200) {
-        const error = await res.json();
-
-        if (error.timeLeft) {
-          setButtonState({
-            text: "Yoink",
-            disabled: true,
-            loading: false,
-            hidden: false,
-          });
-          setTimeLeft(error.timeLeft);
-        } else {
-          setButtonState({
-            text: "Yoink",
-            disabled: false,
-            loading: false,
-            hidden: false,
-          });
-          alert(error.message);
-        }
-        return;
-      }
-
-      const txData = await res.json();
-      await sendTransaction({
-        to: txData.params.to,
-        data: txData.params.data,
-      });
-
-      setButtonState({
-        text: "Yoinking",
-        disabled: true,
-        loading: true,
-        hidden: true,
-      });
-    } catch (e) {
-      setButtonState({
-        text: "Yoink",
-        disabled: false,
-        loading: false,
-        hidden: false,
-      });
-
-      if (e instanceof BaseError) {
-        if (
-          e.details &&
-          (e.details.startsWith("User denied request") ||
-            e.details.startsWith("User rejected request"))
-        ) {
-          return;
-        }
-      }
-
-      alert(`Error sending tx: ${e}`);
-    }
-  }, [account.address, sendTransaction]);
-
-  const handleYoink = useCallback(async () => {
-    try {
-      if (!account.isConnected) {
-        const connectResult = await connectAsync({
-          connector: connectors[0]!,
-          chainId: base.id,
-        });
-
-        if (connectResult.accounts.length) {
-          await yoinkOnchain();
-          return;
-        } else {
-          alert("Unable to connect: no addresses");
-          return;
-        }
-      } else {
-        if (chainId !== base.id) {
-          await switchChainAsync({ chainId: base.id });
-        }
-
-        await yoinkOnchain();
-        return;
-      }
-    } catch (e) {
-      if (e instanceof BaseError) {
-        if (
-          e.details &&
-          // Coinbase Wallet
-          (e.details.startsWith("User denied request") ||
-            // Rainbow
-            e.details.startsWith("User rejected request"))
-        ) {
-          // no-op
-          return;
-        }
-      }
-
-      alert(`Unable to connect: ${e}`);
-    }
-  }, [
-    account.isConnected,
-    connectAsync,
-    connectors,
-    yoinkOnchain,
-    chainId,
-    switchChainAsync,
-  ]);
 
   const init = useCallback(async () => {
     sdk.actions.ready();
@@ -200,20 +64,19 @@ function YoinkStart({
   }, [init, pfp]);
 
   useEffect(() => {
-    sdk.on("primaryButtonClicked", handleYoink);
+    sdk.on("primaryButtonClicked", () => {
+      setTimeLeft(undefined);
+    });
     return () => {
-      sdk.off("primaryButtonClicked", handleYoink);
+      sdk.off("primaryButtonClicked", () => {
+        setTimeLeft(undefined);
+      });
     };
-  }, [handleYoink]);
+  }, []);
 
   useEffect(() => {
     if (txReceiptResult.isLoading) {
-      setButtonState({
-        text: "Yoinking",
-        hidden: true,
-        disabled: false,
-        loading: false,
-      });
+      setTimeLeft(undefined);
     }
   }, [txReceiptResult.isLoading]);
 
@@ -232,17 +95,6 @@ function YoinkStart({
     }
   }, []);
 
-  useEffect(() => {
-    return () => {
-      setButtonState({
-        text: "",
-        hidden: true,
-        loading: false,
-        disabled: false,
-      });
-    };
-  }, []);
-
   const isWarpcastUsername = (username: string) => !username.includes("…");
 
   const handleProfileClick = useCallback(() => {
@@ -252,11 +104,7 @@ function YoinkStart({
   if (typeof timeLeft === "number") {
     return (
       <div className="mt-3 p-3">
-        <TimeLeft
-          timeLeft={timeLeft}
-          setTimeLeft={setTimeLeft}
-          yoink={yoinkOnchain}
-        />
+        <TimeLeft timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
       </div>
     );
   }
@@ -321,14 +169,13 @@ function YoinkStart({
         Add Frame
       </div>
       <div className="mt-4 w-full">
-        <PrimaryButton
-          onClick={handleYoink}
-          disabled={buttonState.disabled}
-          loading={buttonState.loading}
-          hidden={buttonState.hidden}
-        >
-          {buttonState.text}
-        </PrimaryButton>
+        <YoinkButton
+          onTimeLeft={setTimeLeft}
+          onYoinkSuccess={() => {
+            void revalidateFramesV2();
+            router.push(`/framesV2/yoinked?address=${account.address}`);
+          }}
+        />
       </div>
     </div>
   );
@@ -337,11 +184,9 @@ function YoinkStart({
 function TimeLeft({
   timeLeft,
   setTimeLeft,
-  yoink,
 }: {
   timeLeft: number;
   setTimeLeft: (v: number) => void;
-  yoink: () => void;
 }) {
   useEffect(() => {
     if (timeLeft > 0) {
@@ -361,14 +206,7 @@ function TimeLeft({
             YOINK!
           </div>
         </div>
-        <PrimaryButton
-          onClick={yoink}
-          disabled={false}
-          loading={false}
-          hidden={false}
-        >
-          Yoink
-        </PrimaryButton>
+        <YoinkButton onTimeLeft={setTimeLeft} />
       </>
     );
   }
@@ -382,40 +220,6 @@ function TimeLeft({
       <div className="text-sm font-semibold">before you can yoink again</div>
     </div>
   );
-}
-
-function AppFrameButton({
-  text,
-  disabled = false,
-  loading = false,
-  onClick,
-}: {
-  text: string;
-  disabled?: boolean;
-  loading?: boolean;
-  onClick: () => void;
-}) {
-  // Update button
-  useEffect(() => {
-    sdk.actions.setPrimaryButton({ text, disabled, loading });
-  }, [text, disabled, loading]);
-
-  // Bind onClick
-  useEffect(() => {
-    sdk.on("primaryButtonClicked", onClick);
-    return () => {
-      sdk.off("primaryButtonClicked", onClick);
-    };
-  }, [onClick]);
-
-  // Hide button on unmount
-  useEffect(() => {
-    return () => {
-      sdk.actions.setPrimaryButton({ text: "", hidden: true });
-    };
-  }, []);
-
-  return null;
 }
 
 function formatTime(seconds: number) {
