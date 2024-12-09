@@ -43,52 +43,37 @@ async function processNotifications(
   recentActivity?: YoinkActivity[],
 ) {
   try {
-    const latest = await getCurrentYoinker();
-    const notifyYoinkers = recentYoinks.filter(
-      (y) => y.timestamp > (latest?.timestamp ?? 0),
-    );
-
-    if (!latest || notifyYoinkers.length === 0) {
-      return;
-    }
-
-    for (let i = 0; i < notifyYoinkers.length; i++) {
-      const yoinker = notifyYoinkers[i];
-      if (!yoinker) break;
-
-      const alreadySent = await hasNotificationBeenSent(yoinker.id);
+    for (const yoink of recentYoinks) {
+      const alreadySent = await hasNotificationBeenSent(yoink.id);
       if (alreadySent) continue;
 
       const notificationToken = await getNotificationTokenForAddress(
-        yoinker.from,
+        yoink.from,
       );
-      if (notificationToken) {
-        const fullyQualifiedYoinker = recentActivity
-          ? (recentActivity[i]?.by ?? "Someone")
-          : "Someone";
+      if (!notificationToken) continue;
 
-        const notificationId = uuidv4();
-        const res = await fetch(
-          "https://api.warpcast.com/v1/frame-notifications",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              notificationId,
-              title: "You've been Yoinked!",
-              body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
-              targetUrl: "https://yoink.party/framesV2/",
-              tokens: [notificationToken],
-            }),
-          },
-        );
+      const yoinkerUsername =
+        recentActivity?.find(
+          (activity) => activity.by && activity.timestamp === yoink.timestamp,
+        )?.by ?? "Someone";
 
-        await markNotificationAsSent(yoinker.id, notificationId);
-      }
+      const notificationId = uuidv4();
 
-      await setCurrentYoinker(yoinker.by, yoinker.timestamp);
+      await fetch("https://api.warpcast.com/v1/frame-notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notificationId,
+          title: "You've been Yoinked!",
+          body: `${yoinkerUsername} yoinked the flag from you. Yoink it back!`,
+          targetUrl: "https://yoink.party/framesV2/",
+          tokens: [notificationToken],
+        }),
+      });
+
+      await markNotificationAsSent(yoink.id, notificationId);
     }
   } catch (error) {
     console.error("Error processing notifications:", error);
