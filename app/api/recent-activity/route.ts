@@ -66,19 +66,23 @@ async function processNotifications(
           ? (recentActivity[i]?.by ?? "Someone")
           : "Someone";
 
-        await fetch("https://api.warpcast.com/v1/frame-notifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const res = await fetch(
+          "https://api.warpcast.com/v1/frame-notifications",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              notificationId: yoinker.id,
+              title: "You've been Yoinked!",
+              body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
+              targetUrl: "https://yoink.party/framesV2/",
+              tokens: [notificationToken],
+            }),
           },
-          body: JSON.stringify({
-            notificationId: yoinker.id,
-            title: "You've been Yoinked!",
-            body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
-            targetUrl: "https://yoink.party/framesV2/",
-            tokens: [notificationToken],
-          }),
-        });
+        );
+        console.log(res);
 
         await markNotificationAsSent(yoinker.id);
       }
