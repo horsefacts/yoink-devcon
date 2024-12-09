@@ -14,6 +14,7 @@ export const revalidate = 300;
 export default async function Image() {
   const totalYoinks = await getTotalYoinks();
   const yoinkers = await getRecentYoinkers(10);
+  console.log("yoinkers", yoinkers);
 
   return new ImageResponse(
     (
@@ -32,7 +33,7 @@ export default async function Image() {
                 key={i}
                 tw="flex overflow-hidden rounded-full h-24 w-24 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-10 first:ml-0"
               >
-                {typeof user.pfpUrl !== "undefined" && (
+                {!!user.pfpUrl && (
                   <img
                     src={user.pfpUrl}
                     tw="object-cover w-full h-full"
