@@ -91,6 +91,7 @@ function YoinkStart({
   const addFrame = useCallback(async () => {
     try {
       const result = await sdk.actions.addFrame();
+      console.log(result);
 
       if (result.added && result?.notificationDetails) {
         await fetch("/api/notification-token", {
