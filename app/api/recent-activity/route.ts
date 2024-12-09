@@ -4,11 +4,9 @@ import {
   getTotalYoinks,
 } from "../../../lib/contract";
 import {
-  getCurrentYoinker,
   getNotificationTokenForAddress,
-  setCurrentYoinker,
-  hasNotificationBeenSent,
-  markNotificationAsSent,
+  getNotificationState,
+  setNotificationState,
 } from "../../../lib/kv";
 import {
   getUserByAddress,
@@ -44,36 +42,45 @@ async function processNotifications(
 ) {
   try {
     for (const yoink of recentYoinks) {
-      const alreadySent = await hasNotificationBeenSent(yoink.id);
-      if (alreadySent) continue;
+      const currentState = await getNotificationState(yoink.id);
+      if (currentState) continue;
+
+      await setNotificationState(yoink.id, "pending");
 
       const notificationToken = await getNotificationTokenForAddress(
         yoink.from,
       );
-      if (!notificationToken) continue;
+      if (!notificationToken) {
+        await setNotificationState(yoink.id, "skipped");
+        continue;
+      }
 
-      const yoinkerUsername =
+      const username =
         recentActivity?.find(
           (activity) => activity.by && activity.timestamp === yoink.timestamp,
         )?.by ?? "Someone";
 
       const notificationId = uuidv4();
 
-      await fetch("https://api.warpcast.com/v1/frame-notifications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          notificationId,
-          title: "You've been Yoinked!",
-          body: `${yoinkerUsername} yoinked the flag from you. Yoink it back!`,
-          targetUrl: "https://yoink.party/framesV2/",
-          tokens: [notificationToken],
-        }),
-      });
-
-      await markNotificationAsSent(yoink.id, notificationId);
+      try {
+        await fetch("https://api.warpcast.com/v1/frame-notifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId,
+            title: "You've been Yoinked!",
+            body: `${username} yoinked the flag from you. Yoink it back!`,
+            targetUrl: "https://yoink.party/framesV2/",
+            tokens: [notificationToken],
+          }),
+        });
+        await setNotificationState(yoink.id, "sent", notificationId);
+      } catch (error) {
+        console.error("Error sending notification:", error);
+        await setNotificationState(yoink.id, "failed");
+      }
     }
   } catch (error) {
     console.error("Error processing notifications:", error);
