@@ -132,7 +132,6 @@ function YoinkStart({
 
   return (
     <div className="p-3 pt-9 flex flex-col items-center h-[100vh] justify-between">
-      <div></div>
       <div className="pb-8 px-8 flex flex-col items-center">
         <div className="relative mb-1">
           <div
@@ -163,20 +162,15 @@ function YoinkStart({
           </div>
         ) : (
           <>
-            <div className="flex text-2xl font-black text-[#BA181B] uppercase mb-1">
+            <div
+              className="flex text-2xl font-black text-[#BA181B] uppercase mb-1"
+              {...longPressHandlers}
+            >
               Yoink!
             </div>
             <div className="mb-1 font-bold text-sm text-center">
               {lastYoinkedBy} has the flag
             </div>
-            {/* isWarpcastUsername(lastYoinkedBy) && (
-              <button
-                onClick={handleProfileClick}
-                className="my-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg hover:bg-[#A11518] transition-colors duration-200 text-sm font-semibold"
-              >
-                View Profile
-              </button>
-            ) */}
             <div className="text-sm">
               The flag has been yoinked{" "}
               <span className="text-[#BA181B]">{totalYoinks} times</span>
