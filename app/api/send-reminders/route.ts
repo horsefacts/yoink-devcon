@@ -4,7 +4,6 @@ import {
   getNotificationTokenForAddress,
   getScheduledReminders,
   setNotificationState,
-  markNotificationPending,
 } from "../../../lib/kv";
 
 export const dynamic = "force-dynamic";
@@ -14,8 +13,7 @@ async function processReminder(reminder: {
   address: string;
   sendAt: number;
 }) {
-  const acquired = await markNotificationPending("reminder", reminder.id);
-  if (!acquired) return;
+  await setNotificationState("reminder", reminder.id, "pending");
 
   const notificationToken = await getNotificationTokenForAddress(
     reminder.address,
