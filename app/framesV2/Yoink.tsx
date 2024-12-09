@@ -16,6 +16,7 @@ import {
 import { RecentActivity } from "./RecentActivity";
 import { revalidateFramesV2 } from "./actions";
 import { YoinkButton } from "../components/YoinkButton";
+import { RemindButton } from "../components/RemindButton";
 import { useYoinkData } from "../hooks/api";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useLongPress } from "../hooks/useLongPress";
@@ -249,6 +250,7 @@ function TimeLeft({
         {formatTime(timeLeft)}
       </div>
       <div className="text-sm font-semibold">before you can yoink again</div>
+      <RemindButton timeLeft={timeLeft} />
     </div>
   );
 }

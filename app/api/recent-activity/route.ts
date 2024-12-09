@@ -42,14 +42,14 @@ async function processNotifications(
 ) {
   try {
     for (const yoink of recentYoinks) {
-      const acquired = await markNotificationPending(yoink.id);
+      const acquired = await markNotificationPending("yoink", yoink.id);
       if (!acquired) continue;
 
       const notificationToken = await getNotificationTokenForAddress(
         yoink.from,
       );
       if (!notificationToken) {
-        await setNotificationState(yoink.id, "skipped");
+        await setNotificationState("yoink", yoink.id, "skipped");
         continue;
       }
 
@@ -74,10 +74,10 @@ async function processNotifications(
             tokens: [notificationToken],
           }),
         });
-        await setNotificationState(yoink.id, "sent", notificationId);
+        await setNotificationState("yoink", yoink.id, "sent", notificationId);
       } catch (error) {
         console.error("Error sending notification:", error);
-        await setNotificationState(yoink.id, "failed");
+        await setNotificationState("yoink", yoink.id, "failed");
       }
     }
   } catch (error) {
