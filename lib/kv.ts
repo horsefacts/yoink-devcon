@@ -8,7 +8,7 @@ const redis = new Redis({
 type Yoinker = { address: string; timestamp: number };
 
 export const setCurrentYoinker = async (address: string, timestamp: number) => {
-  await redis.set("current-yoinker", JSON.stringify({ address, timestamp }));
+  return redis.set("current-yoinker", JSON.stringify({ address, timestamp }));
 };
 
 export const getCurrentYoinker = async () => {
@@ -24,17 +24,28 @@ export const setNotificationTokenForAddress = async (
   address: string,
   token: string,
 ) => {
-  await redis.set("notification-" + address.toLowerCase(), token);
+  return redis.set(`tokens:${address.toLowerCase()}`, token);
 };
 
 export const getNotificationTokenForAddress = async (address: string) => {
-  return await redis.get<string>("notification-" + address);
+  return redis.get<string>(`tokens:${address}`);
 };
 
 export const hasNotificationBeenSent = async (yoinkId: string) => {
-  return await redis.get<boolean>(`notification-sent-${yoinkId}`);
+  return redis.get<boolean>(`sent:${yoinkId}`);
 };
 
-export const markNotificationAsSent = async (yoinkId: string) => {
-  await redis.set(`notification-sent-${yoinkId}`, true);
+export const markNotificationAsSent = async (
+  yoinkId: string,
+  notificationId: string,
+) => {
+  return redis
+    .multi()
+    .set(`sent:${yoinkId}`, true, { ex: 60 * 60 * 24 * 30 })
+    .set(`notification:${notificationId}`, yoinkId)
+    .exec();
+};
+
+export const getYoinkIdFromNotificationId = async (notificationId: string) => {
+  return redis.get<string>(`notification:${notificationId}`);
 };
