@@ -16,29 +16,38 @@ export const getUserByAddress = async (address: string) => {
   }
 };
 
+type YoinkInput = {
+  from: string;
+  by: string;
+  timestamp: number;
+};
+
+type YoinkWithUsername = {
+  from: string;
+  by: string;
+  timestamp: number;
+};
+
 export const getYoinksWithUsernames = async (
-  yoinks: { from: string; by: string; timestamp: number }[],
-) => {
+  yoinks: YoinkInput[],
+): Promise<YoinkWithUsername[]> => {
   const uniqueAddresses = [
     ...new Set(yoinks.flatMap((yoink) => [yoink.from, yoink.by])),
   ];
 
   const users = await client.fetchBulkUsersByEthereumAddress(uniqueAddresses);
 
-  const addressToUsername = Object.fromEntries(
+  const addressToUsername: Record<string, string> = Object.fromEntries(
     uniqueAddresses.map((address) => {
       const userData = users[address.toLowerCase()];
-      const username =
-        userData && userData[0]
-          ? userData[0].username
-          : truncateAddress(address);
+      const username = userData?.[0]?.username ?? truncateAddress(address);
       return [address, username];
     }),
   );
 
   return yoinks.map((yoink) => ({
-    from: addressToUsername[yoink.from],
-    by: addressToUsername[yoink.by],
+    from: addressToUsername[yoink.from] ?? "Unknown Yoinker",
+    by: addressToUsername[yoink.by] ?? "Unknown Yoinker",
     timestamp: yoink.timestamp,
   }));
 };

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { WagmiProvider } from "./WagmiProvider";
 
 export const metadata: Metadata = {
   title: "Yoink!",
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-[#F5F0EC]">
       <body className="max-w-screen-sm mx-auto overflow-x-hidden">
-        {children}
+        <WagmiProvider>{children}</WagmiProvider>
       </body>
     </html>
   );

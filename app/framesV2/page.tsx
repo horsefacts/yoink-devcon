@@ -1,9 +1,6 @@
 import dynamic from "next/dynamic";
 import { Metadata } from "next";
 
-import { getLastYoinkedBy, getTotalYoinks } from "../../lib/contract";
-import { getUserByAddress, truncateAddress } from "../../lib/neynar";
-
 const Yoink = dynamic(() => import("./Yoink"), { ssr: false });
 
 const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
@@ -19,7 +16,7 @@ const frame = {
       name: "Yoink!",
       url: route,
       splashImageUrl: "https://yoink.party/logo.png",
-      splashBackgroundColor: "#f7f7f7",
+      splashBackgroundColor: "#f5f0ec",
     },
   },
 };
@@ -40,20 +37,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [lastYoinkedBy, totalYoinks] = await Promise.all([
-    getLastYoinkedBy(),
-    getTotalYoinks(),
-  ]);
-
-  const user = await getUserByAddress(lastYoinkedBy);
-  const username = user ? user.username : truncateAddress(lastYoinkedBy);
-  const pfp = user?.pfp_url;
-
-  return (
-    <Yoink
-      lastYoinkedBy={username}
-      pfpUrl={pfp}
-      totalYoinks={totalYoinks.toLocaleString()}
-    />
-  );
+  return <Yoink />;
 }

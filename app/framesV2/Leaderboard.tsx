@@ -1,9 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { getLeaderboard } from "../../lib/contract";
+import { useLeaderboard } from "../hooks/api";
 
-export async function Leaderboard() {
-  const leaderboard = await getLeaderboard(10);
+export function Leaderboard() {
+  const { data: leaderboard } = useLeaderboard();
+
+  if (!leaderboard?.length) {
+    return null;
+  }
 
   return (
     <div className="px-3">
@@ -15,17 +21,19 @@ export async function Leaderboard() {
           className="flex flex-row justify-between py-2"
         >
           <div className="flex-1 flex flex-row items-center gap-[10px]">
-            {leader.pfpUrl && (
-              <Image
-                src={leader.pfpUrl}
-                className="rounded-full h-[38px] w-[38px]"
-                alt={leader.username}
-                height={38}
-                width={38}
-              />
-            )}
-            <div className="flex-shrink">
-              <div className="font-semibold text-sm leading-5">
+            <div className="flex-shrink-0 w-[38px] h-[38px] rounded-full overflow-hidden bg-gray-200">
+              {leader.pfpUrl && (
+                <Image
+                  src={leader.pfpUrl}
+                  className="h-full w-full object-cover"
+                  alt={leader.username ?? leader.address}
+                  height={38}
+                  width={38}
+                />
+              )}
+            </div>
+            <div className="flex-shrink min-w-0">
+              <div className="font-semibold text-sm leading-5 truncate">
                 {leader.username}
               </div>
               <div className="text-xs text-[#8B99A4]">

@@ -9,7 +9,7 @@
     "name": "Yoink!",
     "iconUrl": "https://yoink.party/logo.png",
     "splashImageUrl": "https://yoink.party/logo.png",
-    "splashBackgroundColor": "#f7f7f7",
+    "splashBackgroundColor": "#f5f0ec",
     "homeUrl": "https://yoink.party/framesV2/",
     "webhookUrl": "https://yoink.party/api/webhook"
   }

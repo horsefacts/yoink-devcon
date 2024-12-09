@@ -1,13 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-
-type YoinkWithUsername = {
-  from: string;
-  by: string;
-  timestamp: number;
-};
+import { useRecentActivity } from "../hooks/api";
 
 function formatTimeAgo(timestamp: number): string {
   const formatted = formatDistanceToNowStrict(new Date(timestamp * 1000))
@@ -28,45 +22,16 @@ function formatTimeAgo(timestamp: number): string {
 }
 
 export function RecentActivity() {
-  const [yoinks, setYoinks] = useState<YoinkWithUsername[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: recentActivity } = useRecentActivity();
 
-  useEffect(() => {
-    async function fetchRecentActivity() {
-      try {
-        const response = await fetch("/api/recent-activity");
-        if (!response.ok) {
-          throw new Error("Failed to fetch recent activity");
-        }
-        const data = await response.json();
-        setYoinks(data.yoinksWithUsernames);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchRecentActivity();
-  }, []);
-
-  if (loading) {
-    return <div className="px-3"></div>;
-  }
-
-  if (error) {
-    return (
-      <div className="px-3">
-        <div className="text-sm text-red-500">{error}</div>
-      </div>
-    );
+  if (!recentActivity?.length) {
+    return null;
   }
 
   return (
     <div className="px-3 w-full">
       <div className="text-xs">
-        {yoinks.map((yoink, index) => (
+        {recentActivity.map((yoink, index) => (
           <div
             key={index}
             className="flex flex-row items-center justify-between py-1"

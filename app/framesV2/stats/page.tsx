@@ -2,6 +2,9 @@ import { Metadata } from "next";
 import { Hex } from "viem";
 import { Leaderboard } from "../Leaderboard";
 import { UserHeader } from "../UserHeader";
+import { TotalYoinks } from "../TotalYoinks";
+import { ErrorBoundary } from "../../components/ErrorBoundary";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -48,8 +51,13 @@ export default async function Page({
 
   return (
     <div className="p-3 space-y-3">
-      <UserHeader address={address as Hex} />
-      <Leaderboard />
+      <ErrorBoundary>
+        <Suspense fallback={<div>Loading user stats...</div>}>
+          <UserHeader address={address as Hex} />
+          <TotalYoinks />
+          <Leaderboard />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }

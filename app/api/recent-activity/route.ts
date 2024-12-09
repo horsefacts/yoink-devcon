@@ -1,39 +1,58 @@
-import { getRecentYoinks } from "../../../lib/contract";
+import {
+  getLastYoinkedBy,
+  getRecentYoinks,
+  getTotalYoinks,
+} from "../../../lib/contract";
 import {
   getCurrentYoinker,
   getNotificationTokenForAddress,
   setCurrentYoinker,
 } from "../../../lib/kv";
-import { getYoinksWithUsernames } from "../../../lib/neynar";
+import {
+  getUserByAddress,
+  getYoinksWithUsernames,
+  truncateAddress,
+} from "../../../lib/neynar";
 import { NextResponse } from "next/server";
 
-export type YoinkActivityResponse = {
+export const dynamic = "force-dynamic";
+
+export type YoinkActivity = {
   from: string;
   by: string;
   timestamp: number;
 };
 
-export const dynamic = "force-dynamic";
+export type YoinkDataResponse = {
+  lastYoinkedBy: string;
+  pfpUrl?: string;
+  totalYoinks: string;
+  recentActivity?: YoinkActivity[];
+};
 
 export async function GET() {
   try {
-    const latest = await getCurrentYoinker();
-    const recentYoinks = await getRecentYoinks(10);
+    const [lastYoinkedBy, totalYoinks, recentYoinks] = await Promise.all([
+      getLastYoinkedBy(),
+      getTotalYoinks(),
+      getRecentYoinks(10),
+    ]);
 
+    const latest = await getCurrentYoinker();
     const notifyYoinkers = recentYoinks.filter(
       (y) => y.timestamp > (latest?.timestamp ?? 0),
     );
 
-    let yoinksWithUsernames:
+    let recentActivity:
       | {
-          from: string | undefined;
-          by: string | undefined;
+          from: string;
+          by: string;
           timestamp: number;
         }[]
       | undefined;
 
     try {
-      yoinksWithUsernames = await getYoinksWithUsernames(recentYoinks);
+      recentActivity = await getYoinksWithUsernames(recentYoinks);
     } catch (error) {
       console.error("Error converting addresses to usernames:", error);
     }
@@ -49,8 +68,8 @@ export async function GET() {
             yoinker.from,
           );
           if (notificationToken) {
-            const fullyQualifiedYoinker = yoinksWithUsernames
-              ? (yoinksWithUsernames[i]?.by ?? "Someone")
+            const fullyQualifiedYoinker = recentActivity
+              ? (recentActivity[i]?.by ?? "Someone")
               : "Someone";
             const response = await fetch(
               "https://api.warpcast.com/v1/frame-notifications",
@@ -72,18 +91,19 @@ export async function GET() {
         }
       }
     } catch (error) {
-      console.error("Error fetching recent activity:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch recent activity" },
-        { status: 500 },
-      );
+      console.error("Error processing notifications:", error);
     }
 
-    if (yoinksWithUsernames) {
-      return NextResponse.json({ yoinksWithUsernames });
-    } else {
-      return NextResponse.json({ yoinksWithUsernames: recentYoinks });
-    }
+    const user = await getUserByAddress(lastYoinkedBy);
+    const username = user ? user.username : truncateAddress(lastYoinkedBy);
+    const pfp = user?.pfp_url;
+
+    return NextResponse.json({
+      lastYoinkedBy: username,
+      pfpUrl: pfp,
+      totalYoinks: totalYoinks.toLocaleString(),
+      recentActivity,
+    });
   } catch (error) {
     console.error("Error fetching recent activity:", error);
     return NextResponse.json(

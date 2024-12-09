@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import sdk from "@farcaster/frame-sdk";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
-import { WagmiProvider } from "../WagmiProvider";
 import {
   useAccount,
   useSendTransaction,
@@ -16,25 +15,33 @@ import {
 import { RecentActivity } from "./RecentActivity";
 import { revalidateFramesV2 } from "./actions";
 import { YoinkButton } from "../components/YoinkButton";
+import { useYoinkData } from "../hooks/api";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
-export default function Yoink(props: {
-  lastYoinkedBy: string;
-  pfpUrl?: string;
-  totalYoinks: string;
-}) {
+export default function Yoink() {
   return (
-    <WagmiProvider>
-      <YoinkInner {...props} />
-    </WagmiProvider>
+    <ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <YoinkInner />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
-function YoinkInner(props: {
-  lastYoinkedBy: string;
-  pfpUrl?: string;
-  totalYoinks: string;
-}) {
-  return <YoinkStart {...props} />;
+function YoinkInner() {
+  const { data } = useYoinkData();
+
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <YoinkStart
+      lastYoinkedBy={data.lastYoinkedBy}
+      pfpUrl={data.pfpUrl}
+      totalYoinks={data.totalYoinks}
+    />
+  );
 }
 
 function YoinkStart({
@@ -221,7 +228,6 @@ function TimeLeft({
     </div>
   );
 }
-
 function formatTime(seconds: number) {
   const minutes = Math.floor((seconds % 3600) / 60);
   const remainingSeconds = seconds % 60;
