@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, Suspense } from "react";
 import sdk, { FrameContext } from "@farcaster/frame-sdk";
+import { useQueryClient } from "@tanstack/react-query";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
@@ -57,6 +58,7 @@ function YoinkStart({
   const account = useAccount();
   const { data: hash } = useSendTransaction();
   const txReceiptResult = useWaitForTransactionReceipt({ hash });
+  const queryClient = useQueryClient();
 
   const [context, setContext] = useState<FrameContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
@@ -84,9 +86,10 @@ function YoinkStart({
   useEffect(() => {
     if (txReceiptResult.isSuccess) {
       void revalidateFramesV2();
+      queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
       router.push(`/framesV2/yoinked?address=${account.address}`);
     }
-  }, [account.address, router, txReceiptResult.isSuccess]);
+  }, [account.address, router, txReceiptResult.isSuccess, queryClient]);
 
   const addFrame = useCallback(async () => {
     try {
