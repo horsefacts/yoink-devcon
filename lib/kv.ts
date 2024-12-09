@@ -12,9 +12,9 @@ export const setCurrentYoinker = async (address: string, timestamp: number) => {
 };
 
 export const getCurrentYoinker = async () => {
-  const current = await redis.get<string>("current-yoinker");
+  const current = await redis.get<Yoinker>("current-yoinker");
   if (current != null) {
-    return JSON.parse(current) as Yoinker;
+    return current;
   }
 
   return null;
