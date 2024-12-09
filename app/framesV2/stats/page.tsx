@@ -52,7 +52,7 @@ export default async function Page({
   return (
     <div className="p-3 space-y-3">
       <ErrorBoundary>
-        <Suspense fallback={<div>Loading user stats...</div>}>
+        <Suspense>
           <UserHeader address={address as Hex} />
           <TotalYoinks />
           <Leaderboard />

@@ -7,10 +7,6 @@ import { useLeaderboard } from "../hooks/api";
 export function Leaderboard() {
   const { data: leaderboard } = useLeaderboard();
 
-  if (!leaderboard?.length) {
-    return null;
-  }
-
   return (
     <div className="px-3">
       <div className="text-[#8B99A4] font-semibold">Leaderboard</div>

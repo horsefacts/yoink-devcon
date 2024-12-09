@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { UserStatsResponse } from "../api/user-stats/route";
 import { TotalYoinksResponse } from "../api/total-yoinks/route";
 import { LeaderboardEntryWithUserData } from "../../lib/contract";
 import { YoinkActivity, YoinkDataResponse } from "../api/recent-activity/route";
 
 export function useUserStats(address: string) {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["user-stats", address],
     queryFn: async () => {
       const response = await fetch(`/api/user-stats?address=${address}`, {
@@ -20,7 +20,7 @@ export function useUserStats(address: string) {
 }
 
 export function useTotalYoinks() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["total-yoinks"],
     queryFn: async () => {
       const response = await fetch("/api/total-yoinks", {
@@ -35,7 +35,7 @@ export function useTotalYoinks() {
 }
 
 export function useLeaderboard() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
       const response = await fetch("/api/leaderboard", {
@@ -50,7 +50,7 @@ export function useLeaderboard() {
 }
 
 export function useRecentActivity() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["recent-activity"],
     queryFn: async () => {
       const response = await fetch("/api/recent-activity", {
@@ -66,7 +66,7 @@ export function useRecentActivity() {
 }
 
 export function useYoinkData() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["yoink-data"],
     queryFn: async () => {
       const response = await fetch("/api/recent-activity", {

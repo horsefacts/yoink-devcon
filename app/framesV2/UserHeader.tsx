@@ -5,7 +5,6 @@ import { intervalToDuration, Duration, formatDistance } from "date-fns";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
-import { TotalYoinks } from "./TotalYoinks";
 import { useUserStats } from "../hooks/api";
 
 export function UserHeader(props: {
@@ -14,10 +13,6 @@ export function UserHeader(props: {
   isMe?: boolean;
 }) {
   const { data: stats } = useUserStats(props.address);
-
-  if (!stats) {
-    return null;
-  }
 
   const duration = formatCustomDuration(
     intervalToDuration({

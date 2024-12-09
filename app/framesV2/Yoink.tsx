@@ -21,7 +21,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 export default function Yoink() {
   return (
     <ErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense>
         <YoinkInner />
       </Suspense>
     </ErrorBoundary>

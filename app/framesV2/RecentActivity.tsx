@@ -24,10 +24,6 @@ function formatTimeAgo(timestamp: number): string {
 export function RecentActivity() {
   const { data: recentActivity } = useRecentActivity();
 
-  if (!recentActivity?.length) {
-    return null;
-  }
-
   return (
     <div className="px-3 w-full">
       <div className="text-xs">
