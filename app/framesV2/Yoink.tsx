@@ -176,7 +176,7 @@ function YoinkStart({
       </div>
       <RecentActivity />
       <div className="flex flex-col grow"></div>
-      {context?.user.fid === 20943 && (
+      {context?.user.fid === 3621 && (
         <div
           className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
           onClick={addFrame}
