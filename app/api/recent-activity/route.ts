@@ -82,7 +82,8 @@ async function processNotifications(
             }),
           },
         );
-        console.log(res);
+        console.log(res.status);
+        console.log(await res.json());
 
         await markNotificationAsSent(yoinker.id);
       }
