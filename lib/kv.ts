@@ -24,7 +24,7 @@ export const setNotificationTokenForAddress = async (
   address: string,
   token: string,
 ) => {
-  await redis.set("notification-" + address, token);
+  await redis.set("notification-" + address.toLowerCase(), token);
 };
 
 export const getNotificationTokenForAddress = async (address: string) => {
