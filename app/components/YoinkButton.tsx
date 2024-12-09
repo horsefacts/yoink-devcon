@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useAccount, useSendTransaction } from "wagmi";
-import { BaseError } from "viem";
+import { BaseError, Hex } from "viem";
 import { useConnect, useSwitchChain, useChainId } from "wagmi";
 import { base } from "viem/chains";
 import { PrimaryButton } from "./PrimaryButton";
@@ -14,7 +14,7 @@ type ButtonState = {
 
 interface YoinkButtonProps {
   onYoinkStart?: () => void;
-  onYoinkSuccess?: () => void;
+  onYoinkSuccess?: (txHash: Hex) => void;
   onTimeLeft?: (timeLeft: number) => void;
 }
 
@@ -78,10 +78,11 @@ export function YoinkButton({
       }
 
       const txData = await res.json();
-      await sendTransaction({
+      const txHash = await sendTransaction({
         to: txData.params.to,
         data: txData.params.data,
       });
+      onYoinkSuccess?.(txHash);
 
       setButtonState({
         text: "Yoinking",
@@ -89,8 +90,6 @@ export function YoinkButton({
         loading: true,
         hidden: true,
       });
-
-      onYoinkSuccess?.();
     } catch (e) {
       setButtonState({
         text: "Yoink",

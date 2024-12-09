@@ -19,6 +19,7 @@ import { YoinkButton } from "../components/YoinkButton";
 import { useYoinkData } from "../hooks/api";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useLongPress } from "../hooks/useLongPress";
+import { Hex } from "viem";
 
 export default function Yoink() {
   return (
@@ -57,12 +58,13 @@ function YoinkStart({
 }) {
   const router = useRouter();
   const account = useAccount();
-  const { data: hash } = useSendTransaction();
-  const txReceiptResult = useWaitForTransactionReceipt({ hash });
   const queryClient = useQueryClient();
 
+  const [hash, setHash] = useState<Hex>();
   const [context, setContext] = useState<FrameContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
+
+  const txReceiptResult = useWaitForTransactionReceipt({ hash });
 
   const pfp = pfpUrl ?? FlagAvatar;
 
@@ -199,7 +201,8 @@ function YoinkStart({
       <div className="mt-4 w-full">
         <YoinkButton
           onTimeLeft={setTimeLeft}
-          onYoinkSuccess={() => {
+          onYoinkSuccess={(txHash: Hex) => {
+            setHash(txHash);
             void revalidateFramesV2();
             router.push(`/framesV2/yoinked?address=${account.address}`);
           }}
