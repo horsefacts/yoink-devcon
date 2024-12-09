@@ -67,13 +67,38 @@ export const scheduleReminder = async (
   address: string,
   sendAt: number,
 ): Promise<string> => {
+  const addressLower = address.toLowerCase();
+
+  const existingReminders = await redis.zrange<ReminderId[]>(
+    "notification:scheduled_reminders",
+    "-inf",
+    "+inf",
+    {
+      byScore: true,
+    },
+  );
+
+  const existingReminder = existingReminders.find((id) => {
+    const [_, reminderAddress] = id.split(":");
+    return reminderAddress?.toLowerCase() === addressLower;
+  });
+
+  const multi = redis.multi();
   const id = `reminder:${address}:${sendAt}`;
 
-  await redis
-    .multi()
+  // If there's an existing reminder, remove it and its state
+  if (existingReminder) {
+    multi
+      .del(`notification:state:${existingReminder}`)
+      .zrem("notification:scheduled_reminders", existingReminder);
+  }
+
+  // Add the new reminder
+  multi
     .set(`notification:state:${id}`, "scheduled")
-    .zadd("notification:scheduled_reminders", { score: sendAt, member: id })
-    .exec();
+    .zadd("notification:scheduled_reminders", { score: sendAt, member: id });
+
+  await multi.exec();
 
   return id;
 };

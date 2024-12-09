@@ -1,17 +1,23 @@
 import { useAccount } from "wagmi";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
 
 export function RemindButton({ timeLeft }: { timeLeft: number }) {
   const account = useAccount();
+  const [status, setStatus] = useState<
+    "idle" | "success" | "error" | "loading"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleRemind = useCallback(async () => {
+    if (status === "loading" || status === "success") return;
+
     try {
+      setStatus("loading");
       const result = await sdk.actions.addFrame();
 
       if (result.added) {
         if (result.notificationDetails) {
-          // Save notification token
           await fetch("/api/notification-token", {
             method: "POST",
             headers: {
@@ -23,7 +29,6 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
             }),
           });
 
-          // Schedule reminder
           await fetch("/api/schedule-reminder", {
             method: "POST",
             headers: {
@@ -35,24 +40,43 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
             }),
           });
 
-          alert("We'll remind you when it's time to yoink!");
+          setStatus("success");
         } else {
-          alert("Notification token already saved.");
+          setStatus("success");
         }
       } else if (result.reason === "rejected-by-user") {
-        alert("User dismissed add frame.");
+        setStatus("error");
+        setErrorMessage("You dismissed the frame request");
       }
     } catch (error) {
-      alert("Failed to schedule reminder.");
+      setStatus("error");
+      setErrorMessage("Failed to schedule reminder");
     }
-  }, [account.address, timeLeft]);
+  }, [account.address, timeLeft, status]);
 
   return (
-    <button
-      onClick={handleRemind}
-      className="mt-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg font-semibold hover:bg-[#A41618] transition-colors"
-    >
-      Remind me when ready
-    </button>
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={handleRemind}
+        disabled={status === "loading" || status === "success"}
+        className={`mt-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg font-semibold transition-colors ${
+          status === "loading" || status === "success"
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-[#A41618]"
+        }`}
+      >
+        {status === "loading" ? "Setting reminder..." : "Remind me"}
+      </button>
+
+      {status === "success" && (
+        <div className="text-sm text-green-600 font-medium">
+          We&apos;ll remind you when it&apos;s time to yoink!
+        </div>
+      )}
+
+      {status === "error" && (
+        <div className="text-sm text-red-600 font-medium">{errorMessage}</div>
+      )}
+    </div>
   );
 }
