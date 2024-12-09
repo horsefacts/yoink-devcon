@@ -30,3 +30,11 @@ export const setNotificationTokenForAddress = async (
 export const getNotificationTokenForAddress = async (address: string) => {
   return await redis.get<string>("notification-" + address);
 };
+
+export const hasNotificationBeenSent = async (yoinkId: string) => {
+  return await redis.get<boolean>(`notification-sent-${yoinkId}`);
+};
+
+export const markNotificationAsSent = async (yoinkId: string) => {
+  await redis.set(`notification-sent-${yoinkId}`, true);
+};

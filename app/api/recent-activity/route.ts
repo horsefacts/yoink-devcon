@@ -7,6 +7,8 @@ import {
   getCurrentYoinker,
   getNotificationTokenForAddress,
   setCurrentYoinker,
+  hasNotificationBeenSent,
+  markNotificationAsSent,
 } from "../../../lib/kv";
 import {
   getUserByAddress,
@@ -30,6 +32,64 @@ export type YoinkDataResponse = {
   recentActivity?: YoinkActivity[];
 };
 
+async function processNotifications(
+  recentYoinks: Array<{
+    id: string;
+    by: string;
+    from: string;
+    timestamp: number;
+  }>,
+  recentActivity?: YoinkActivity[],
+) {
+  try {
+    const latest = await getCurrentYoinker();
+    const notifyYoinkers = recentYoinks.filter(
+      (y) => y.timestamp > (latest?.timestamp ?? 0),
+    );
+
+    if (!latest || notifyYoinkers.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < notifyYoinkers.length; i++) {
+      const yoinker = notifyYoinkers[i];
+      if (!yoinker) break;
+
+      const alreadySent = await hasNotificationBeenSent(yoinker.id);
+      if (alreadySent) continue;
+
+      const notificationToken = await getNotificationTokenForAddress(
+        yoinker.from,
+      );
+      if (notificationToken) {
+        const fullyQualifiedYoinker = recentActivity
+          ? (recentActivity[i]?.by ?? "Someone")
+          : "Someone";
+
+        await fetch("https://api.warpcast.com/v1/frame-notifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: yoinker.id,
+            title: "You've been Yoinked!",
+            body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
+            targetUrl: "https://yoink.party/framesV2/",
+            tokens: [notificationToken],
+          }),
+        });
+
+        await markNotificationAsSent(yoinker.id);
+      }
+
+      await setCurrentYoinker(yoinker.by, yoinker.timestamp);
+    }
+  } catch (error) {
+    console.error("Error processing notifications:", error);
+  }
+}
+
 export async function GET() {
   try {
     const [lastYoinkedBy, totalYoinks, recentYoinks] = await Promise.all([
@@ -38,18 +98,7 @@ export async function GET() {
       getRecentYoinks(10),
     ]);
 
-    const latest = await getCurrentYoinker();
-    const notifyYoinkers = recentYoinks.filter(
-      (y) => y.timestamp > (latest?.timestamp ?? 0),
-    );
-
-    let recentActivity:
-      | {
-          from: string;
-          by: string;
-          timestamp: number;
-        }[]
-      | undefined;
+    let recentActivity: YoinkActivity[] | undefined;
 
     try {
       recentActivity = await getYoinksWithUsernames(recentYoinks);
@@ -57,42 +106,7 @@ export async function GET() {
       console.error("Error converting addresses to usernames:", error);
     }
 
-    try {
-      if (latest && notifyYoinkers.length > 0) {
-        for (let i = 0; i < notifyYoinkers.length; i++) {
-          const yoinker = notifyYoinkers[i];
-          if (!yoinker) break;
-
-          await setCurrentYoinker(yoinker.by, yoinker.timestamp);
-          const notificationToken = await getNotificationTokenForAddress(
-            yoinker.from,
-          );
-          if (notificationToken) {
-            const fullyQualifiedYoinker = recentActivity
-              ? (recentActivity[i]?.by ?? "Someone")
-              : "Someone";
-            const response = await fetch(
-              "https://api.warpcast.com/v1/frame-notifications",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  notificationId: crypto.randomUUID(),
-                  title: "You've been Yoinked!",
-                  body: `${fullyQualifiedYoinker} yoinked the flag from you. Yoink it back!`,
-                  targetUrl: "https://yoink.party/framesV2/",
-                  tokens: [notificationToken],
-                }),
-              },
-            );
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error processing notifications:", error);
-    }
+    processNotifications(recentYoinks, recentActivity);
 
     const user = await getUserByAddress(lastYoinkedBy);
     const username = user ? user.username : truncateAddress(lastYoinkedBy);

@@ -46,8 +46,8 @@ export const getYoinksWithUsernames = async (
   );
 
   return yoinks.map((yoink) => ({
-    from: addressToUsername[yoink.from] ?? "Unknown Yoinker",
-    by: addressToUsername[yoink.by] ?? "Unknown Yoinker",
+    from: addressToUsername[yoink.from] ?? "Someone",
+    by: addressToUsername[yoink.by] ?? "Someone",
     timestamp: yoink.timestamp,
   }));
 };
