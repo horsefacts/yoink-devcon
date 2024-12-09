@@ -35,10 +35,13 @@ export const setNotificationState = async (
   return multi.exec();
 };
 
-export const getNotificationState = async (yoinkId: string) => {
-  return redis.get<NotificationState>(`notification:state:${yoinkId}`);
-};
-
 export const getYoinkIdFromNotificationId = async (notificationId: string) => {
   return redis.get<string>(`notification:uuid:${notificationId}`);
+};
+
+export const markNotificationPending = async (
+  yoinkId: string,
+): Promise<boolean> => {
+  const result = await redis.setnx(`notification:state:${yoinkId}`, "pending");
+  return result === 1;
 };

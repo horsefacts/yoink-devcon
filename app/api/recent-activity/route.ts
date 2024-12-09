@@ -5,8 +5,8 @@ import {
 } from "../../../lib/contract";
 import {
   getNotificationTokenForAddress,
-  getNotificationState,
   setNotificationState,
+  markNotificationPending,
 } from "../../../lib/kv";
 import {
   getUserByAddress,
@@ -42,10 +42,8 @@ async function processNotifications(
 ) {
   try {
     for (const yoink of recentYoinks) {
-      const currentState = await getNotificationState(yoink.id);
-      if (currentState) continue;
-
-      await setNotificationState(yoink.id, "pending");
+      const acquired = await markNotificationPending(yoink.id);
+      if (!acquired) continue;
 
       const notificationToken = await getNotificationTokenForAddress(
         yoink.from,
