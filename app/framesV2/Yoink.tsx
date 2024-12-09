@@ -95,19 +95,27 @@ function YoinkStart({
   const addFrame = useCallback(async () => {
     try {
       const result = await sdk.actions.addFrame();
-      console.log(result);
 
-      if (result.added && result?.notificationDetails) {
-        await fetch("/api/notification-token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            address: account.address,
-            token: result.notificationDetails.token,
-          }),
-        });
+      if (result.added) {
+        if (result.notificationDetails) {
+          await fetch("/api/notification-token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              address: account.address,
+              token: result.notificationDetails.token,
+            }),
+          });
+          alert("Saved notification token.");
+        } else {
+          alert("Notification token already saved.");
+        }
+      } else if (result.reason === "rejected-by-user") {
+        alert("User dismissed add frame.");
+      } else if (result.reason === "invalid-domain-manifest") {
+        alert("Invalid frame manifest.");
       }
     } catch (error) {
       alert("Failed to store notification token.");
