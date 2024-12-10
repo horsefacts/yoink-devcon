@@ -4,6 +4,10 @@ import {
   eventSchema,
 } from "@farcaster/frame-sdk";
 import { NextRequest } from "next/server";
+import {
+  setNotificationTokenForFid,
+  deleteNotificationTokenForFid,
+} from "../../../lib/kv";
 
 export async function POST(request: NextRequest) {
   const requestJson = await request.json();
@@ -43,30 +47,47 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  switch (payload.data.event) {
-    case "frame-added":
-      console.log(
-        payload.data.notificationDetails
-          ? `Got frame-added event for fid ${fid} with notification token ${payload.data.notificationDetails.token} and url ${payload.data.notificationDetails.url}`
-          : `Got frame-added event for fid ${fid} with no notification details`,
-      );
-      break;
-    case "frame-removed":
-      console.log(`Got frame-removed event for fid ${fid}`);
-      break;
-    case "notifications-enabled":
-      console.log(
-        `Got notifications-enabled event for fid ${fid} with token ${
-          payload.data.notificationDetails.token
-        } and url ${payload.data.notificationDetails.url} ${JSON.stringify(
-          payload.data,
-        )}`,
-      );
-      break;
-    case "notifications-disabled":
-      console.log(`Got notifications-disabled event for fid ${fid}`);
-      break;
-  }
+  try {
+    switch (payload.data.event) {
+      case "frame-added":
+        if (payload.data.notificationDetails) {
+          await setNotificationTokenForFid(
+            fid,
+            payload.data.notificationDetails.token,
+          );
+          console.log(
+            `Saved notification token for fid ${fid}: ${payload.data.notificationDetails.token}`,
+          );
+        }
+        break;
 
-  return Response.json({ success: true });
+      case "frame-removed":
+        await deleteNotificationTokenForFid(fid);
+        console.log(`Removed notification token for fid ${fid}`);
+        break;
+
+      case "notifications-enabled":
+        await setNotificationTokenForFid(
+          fid,
+          payload.data.notificationDetails.token,
+        );
+        console.log(
+          `Updated notification token for fid ${fid}: ${payload.data.notificationDetails.token}`,
+        );
+        break;
+
+      case "notifications-disabled":
+        await deleteNotificationTokenForFid(fid);
+        console.log(`Disabled notifications for fid ${fid}`);
+        break;
+    }
+
+    return Response.json({ success: true });
+  } catch (error) {
+    console.error("Error handling webhook:", error);
+    return Response.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 },
+    );
+  }
 }

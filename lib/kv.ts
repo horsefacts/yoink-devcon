@@ -144,3 +144,7 @@ export const getScheduledReminders = async () => {
 
   return reminders;
 };
+
+export const deleteNotificationTokenForFid = async (fid: number) => {
+  return redis.del(`tokens:fid:${fid}`);
+};
