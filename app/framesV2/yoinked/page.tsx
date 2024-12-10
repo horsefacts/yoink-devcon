@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
-import { Leaderboard } from "../Leaderboard";
 import { UserHeader } from "../UserHeader";
 import { TotalYoinks } from "../TotalYoinks";
 import { Hex } from "viem";
 import { AddFrameButton } from "../../components/AddFrameButton";
 import { ActionButtonContainer } from "../../components/ActionButtonContainer";
+import { LeaderboardToggle } from "../../components/LeaderboardToggle";
 
 export default async function Page({
   searchParams,
@@ -24,7 +24,7 @@ export default async function Page({
           <Suspense>
             <UserHeader address={address as Hex} hasFlag />
             <TotalYoinks />
-            <Leaderboard />
+            <LeaderboardToggle address={address as string} />
           </Suspense>
         </ErrorBoundary>
       </div>

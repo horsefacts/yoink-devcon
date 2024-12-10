@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { Hex } from "viem";
-import { Leaderboard } from "../Leaderboard";
+import { LeaderboardToggle } from "../../components/LeaderboardToggle";
 import { UserHeader } from "../UserHeader";
 import { TotalYoinks } from "../TotalYoinks";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
@@ -57,7 +57,7 @@ export default async function Page({
           <Suspense>
             <UserHeader address={address as Hex} hasFlag />
             <TotalYoinks />
-            <Leaderboard />
+            <LeaderboardToggle address={address as string} />
           </Suspense>
         </ErrorBoundary>
       </div>

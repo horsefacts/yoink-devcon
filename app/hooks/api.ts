@@ -90,3 +90,18 @@ export function useNotificationToken({ fid }: { fid?: number }) {
     enabled: !!fid,
   });
 }
+
+export function useRankings(address: string) {
+  return useSuspenseQuery({
+    queryKey: ["rankings", address],
+    queryFn: async () => {
+      const response = await fetch(`/api/rankings?address=${address}`, {
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch rankings");
+      }
+      return response.json();
+    },
+  });
+}

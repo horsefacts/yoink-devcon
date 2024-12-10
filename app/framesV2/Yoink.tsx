@@ -18,6 +18,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useLongPress } from "../hooks/useLongPress";
 import { Hex } from "viem";
 import { ActionButtonContainer } from "../components/ActionButtonContainer";
+import { PrimaryButton } from "../components/PrimaryButton";
 
 export default function Yoink() {
   return (
@@ -142,7 +143,8 @@ function YoinkStart({
     }
   }, [context?.user.fid]);
 
-  const isWarpcastUsername = (username: string) => !username.includes("…");
+  const isWarpcastUsername = (username: string) =>
+    !username.includes("…") && !username.startsWith("!");
 
   const handleProfileClick = useCallback(() => {
     sdk.actions.openUrl(`https://warpcast.com/${lastYoinkedBy}`);
@@ -199,6 +201,13 @@ function YoinkStart({
             <div className="mb-1 font-bold text-sm text-center">
               {lastYoinkedBy} has the flag
             </div>
+            {isWarpcastUsername(lastYoinkedBy) && (
+              <div className="mb-3">
+                <PrimaryButton onClick={handleProfileClick}>
+                  View Profile
+                </PrimaryButton>
+              </div>
+            )}
             <div className="text-sm">
               The flag has been yoinked{" "}
               <span className="text-[#BA181B]">{totalYoinks} times</span>

@@ -566,3 +566,24 @@ export const getRecentYoinkers = async (
     };
   });
 };
+
+export type RankingResponse = {
+  targetRank: number;
+  rankings: {
+    rank: number;
+    address: string;
+    yoinks: number;
+  }[];
+};
+
+export const getAddressRankings = async (
+  address: string,
+): Promise<RankingResponse> => {
+  const response = await fetch(
+    `https://yoink-indexer-production.up.railway.app/leaderboard/${address}`,
+    {
+      cache: "no-store",
+    },
+  );
+  return response.json();
+};
