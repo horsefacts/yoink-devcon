@@ -39,8 +39,15 @@ export const getYoinksWithUsernames = async (
 
   const addressToUsername: Record<string, string> = Object.fromEntries(
     uniqueAddresses.map((address) => {
-      const userData = users[address.toLowerCase()];
-      const username = userData?.[0]?.username ?? truncateAddress(address);
+      const userData = users[address.toLowerCase()] ?? [];
+      let username;
+      if (userData.length > 1) {
+        const user = userData.find((v) => !v.username.startsWith("!"));
+        username = user?.username;
+      } else if (userData.length == 1) {
+        username = userData[0]?.username;
+      }
+      username = username ?? truncateAddress(address);
       return [address, username];
     }),
   );
