@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { toast } from "react-toastify";
+import { PrimaryButton } from "./PrimaryButton";
 
 export function RemindButton({ timeLeft }: { timeLeft: number }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -52,18 +53,14 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
   }, [timeLeft, status]);
 
   return (
-    <div className="flex flex-col items-center">
-      <button
+    <div className="mt-4 w-full">
+      <PrimaryButton
         onClick={handleRemind}
         disabled={status === "loading"}
-        className={`mt-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg font-semibold transition-colors ${
-          status === "loading"
-            ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-[#A41618]"
-        }`}
+        loading={status === "loading"}
       >
         {status === "loading" ? "Setting reminder..." : "Remind me"}
-      </button>
+      </PrimaryButton>
     </div>
   );
 }

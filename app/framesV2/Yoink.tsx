@@ -277,7 +277,9 @@ function TimeLeft({
         {formatTime(timeLeft)}
       </div>
       <div className="text-sm font-semibold">before you can yoink again</div>
-      <RemindButton timeLeft={timeLeft} />
+      <div className="flex-shrink-0 p-3">
+        <RemindButton timeLeft={timeLeft} />
+      </div>
     </div>
   );
 }
