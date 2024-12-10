@@ -6,7 +6,8 @@ import {
 } from "viem";
 import { NextRequest, NextResponse } from "next/server";
 import { transaction } from "frames.js/core";
-import { abi, YOINK_ADDRESS, simulateYoink } from "../../../lib/contract";
+import { simulateYoink } from "../../../lib/contract";
+import { abi, YOINK_ADDRESS } from "../../../lib/constants";
 import { formatDuration } from "../../../lib/time";
 
 export const dynamic = "force-dynamic";

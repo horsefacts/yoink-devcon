@@ -4,7 +4,8 @@ import {
   ContractFunctionRevertedError,
 } from "viem";
 import { frames } from "../frames";
-import { abi, YOINK_ADDRESS, simulateYoink } from "../../../lib/contract";
+import { simulateYoink } from "../../../lib/contract";
+import { abi, YOINK_ADDRESS } from "../../../lib/constants";
 import { transaction, error } from "frames.js/core";
 import { formatDuration } from "../../../lib/time";
 
