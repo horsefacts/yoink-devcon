@@ -4,10 +4,14 @@ import {
   eventSchema,
 } from "@farcaster/frame-sdk";
 import { NextRequest } from "next/server";
+import { ed25519 } from "@noble/curves/ed25519";
 import {
   setNotificationTokenForFid,
   deleteNotificationTokenForFid,
 } from "../../../lib/kv";
+import { createPublicClient, http } from "viem";
+import { optimism } from "viem/chains";
+import { KEY_REGISTRY_ADDRESS, keyRegistryABI } from "@farcaster/core";
 
 export async function POST(request: NextRequest) {
   const requestJson = await request.json();
@@ -20,8 +24,6 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
-
-  // TODO: verify signature
 
   const headerData = JSON.parse(
     Buffer.from(requestBody.data.header, "base64url").toString("utf-8"),
@@ -44,6 +46,53 @@ export async function POST(request: NextRequest) {
     return Response.json(
       { success: false, errors: payload.error.errors },
       { status: 400 },
+    );
+  }
+
+  // Verify signature
+  const signedInput = new Uint8Array(
+    Buffer.from(requestBody.data.header + "." + requestBody.data.payload),
+  );
+  const signature = Buffer.from(
+    requestBody.data.signature,
+    "base64url",
+  ).toString("utf-8");
+  const verifyResult = ed25519.verify(signature, signedInput, header.data.key);
+
+  if (!verifyResult) {
+    return Response.json(
+      { success: false, errors: ["Invalid signature"] },
+      { status: 400 },
+    );
+  }
+
+  // Verify key is registered in KeyRegistry contract
+  const optimismClient = createPublicClient({
+    chain: optimism,
+    transport: http("https://mainnet.optimism.io"),
+  });
+
+  try {
+    const hexKey =
+      `0x${Buffer.from(header.data.key, "base64url").toString("hex")}` as const;
+    const keyData = await optimismClient.readContract({
+      address: KEY_REGISTRY_ADDRESS,
+      abi: keyRegistryABI,
+      functionName: "keyDataOf",
+      args: [BigInt(fid), hexKey],
+    });
+
+    if (!keyData || keyData.keyType !== 1 || keyData.state !== 1) {
+      return Response.json(
+        { success: false, errors: ["Invalid signer key"] },
+        { status: 400 },
+      );
+    }
+  } catch (error) {
+    console.error("Error verifying key in registry:", error);
+    return Response.json(
+      { success: false, error: "Failed to verify signer key" },
+      { status: 500 },
     );
   }
 
