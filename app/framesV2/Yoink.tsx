@@ -135,9 +135,9 @@ function YoinkStart({
         } else {
           alert("Notification token already saved.");
         }
-      } else if (result.reason === "rejected-by-user") {
+      } else if (result.reason === "rejected_by_user") {
         alert("User dismissed add frame.");
-      } else if (result.reason === "invalid-domain-manifest") {
+      } else if (result.reason === "invalid_domain_manifest") {
         alert("Invalid frame manifest.");
       }
     } catch (error) {

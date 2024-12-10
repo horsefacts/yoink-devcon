@@ -52,10 +52,10 @@ export function AddFrameButton() {
         } else {
           setStatus("success");
         }
-      } else if (result.reason === "rejected-by-user") {
+      } else if (result.reason === "rejected_by_user") {
         setStatus("error");
         setErrorMessage("You dismissed the frame request");
-      } else if (result.reason === "invalid-domain-manifest") {
+      } else if (result.reason === "invalid_domain_manifest") {
         setStatus("error");
         setErrorMessage("Invalid frame manifest");
       }
