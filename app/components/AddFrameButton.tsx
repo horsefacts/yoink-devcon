@@ -5,6 +5,7 @@ import sdk from "@farcaster/frame-sdk";
 import { useNotificationToken } from "../hooks/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { PrimaryButton } from "./PrimaryButton";
+import { toast } from "react-toastify";
 
 export function AddFrameButton() {
   const queryClient = useQueryClient();
@@ -47,6 +48,7 @@ export function AddFrameButton() {
           });
           setStatus("success");
           queryClient.invalidateQueries({ queryKey: ["notification-token"] });
+          toast.success("Frame added successfully!");
         } else {
           setStatus("success");
         }

@@ -4,6 +4,7 @@ import { BaseError, Hex } from "viem";
 import { useConnect, useSwitchChain, useChainId } from "wagmi";
 import { base } from "viem/chains";
 import { PrimaryButton } from "./PrimaryButton";
+import { toast } from "react-toastify";
 
 type ButtonState = {
   text: string;
@@ -72,7 +73,7 @@ export function YoinkButton({
             loading: false,
             hidden: false,
           });
-          alert(error.message);
+          toast.error(error.message);
         }
         return;
       }
@@ -108,8 +109,8 @@ export function YoinkButton({
           return;
         }
       }
-
-      alert(`Error sending tx: ${e}`);
+      toast.error("Something went wrong.");
+      console.error(e);
     }
   }, [
     account.address,
@@ -131,7 +132,7 @@ export function YoinkButton({
           await yoinkOnchain();
           return;
         } else {
-          alert("Unable to connect: no addresses");
+          toast.error("Unable to connect: no addresses");
           return;
         }
       } else {
@@ -153,7 +154,8 @@ export function YoinkButton({
         }
       }
 
-      alert(`Unable to connect: ${e}`);
+      toast.error("Unable to connect.");
+      console.error(e);
     }
   }, [
     account.isConnected,

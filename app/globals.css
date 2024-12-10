@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "react-toastify/dist/ReactToastify.css";
+
 @layer base {
   :root {
     --background: #f5f0ec;

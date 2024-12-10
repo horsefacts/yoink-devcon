@@ -139,7 +139,7 @@ function YoinkStart({
     } catch (error) {
       alert("Failed to store notification token.");
     }
-  }, [account.address]);
+  }, [context?.user.fid]);
 
   const isWarpcastUsername = (username: string) => !username.includes("…");
 

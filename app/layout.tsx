@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { WagmiProvider } from "./WagmiProvider";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Yoink!",
@@ -16,6 +17,16 @@ export default function RootLayout({
     <html lang="en" className="bg-[#F5F0EC]">
       <body className="max-w-screen-sm mx-auto overflow-x-hidden">
         <WagmiProvider>{children}</WagmiProvider>
+        <ToastContainer
+          position="top-center"
+          theme="light"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeButton={false}
+          closeOnClick
+          pauseOnHover
+        />
       </body>
     </html>
   );

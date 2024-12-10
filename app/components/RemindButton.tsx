@@ -1,15 +1,12 @@
-import { useAccount } from "wagmi";
 import { useCallback, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
+import { toast } from "react-toastify";
 
 export function RemindButton({ timeLeft }: { timeLeft: number }) {
-  const [status, setStatus] = useState<
-    "idle" | "success" | "error" | "loading"
-  >("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
 
   const handleRemind = useCallback(async () => {
-    if (status === "loading" || status === "success") return;
+    if (status === "loading") return;
 
     try {
       setStatus("loading");
@@ -41,43 +38,32 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
             }),
           });
 
-          setStatus("success");
-        } else {
-          setStatus("success");
+          toast.success("We'll remind you when it's time to yoink!");
         }
+        setStatus("idle");
       } else if (result.reason === "rejected-by-user") {
-        setStatus("error");
-        setErrorMessage("You dismissed the frame request");
+        toast.error("You dismissed the frame request");
+        setStatus("idle");
       }
     } catch (error) {
-      setStatus("error");
-      setErrorMessage("Failed to schedule reminder");
+      toast.error("Failed to schedule reminder");
+      setStatus("idle");
     }
   }, [timeLeft, status]);
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center">
       <button
         onClick={handleRemind}
-        disabled={status === "loading" || status === "success"}
+        disabled={status === "loading"}
         className={`mt-4 px-4 py-2 bg-[#BA181B] text-white rounded-lg font-semibold transition-colors ${
-          status === "loading" || status === "success"
+          status === "loading"
             ? "opacity-50 cursor-not-allowed"
             : "hover:bg-[#A41618]"
         }`}
       >
         {status === "loading" ? "Setting reminder..." : "Remind me"}
       </button>
-
-      {status === "success" && (
-        <div className="text-sm text-green-600 font-medium">
-          We&apos;ll remind you when it&apos;s time to yoink!
-        </div>
-      )}
-
-      {status === "error" && (
-        <div className="text-sm text-red-600 font-medium">{errorMessage}</div>
-      )}
     </div>
   );
 }
