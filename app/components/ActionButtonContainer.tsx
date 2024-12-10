@@ -6,7 +6,7 @@ export function ActionButtonContainer({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 max-w-screen-sm mx-auto p-4 pb-6 bg-[#FDF6F5] border-t border-[#F9D0D3]">
+    <div className="fixed bottom-0 left-0 right-0 max-w-screen-sm mx-auto p-4 pb-6 bg-[#FDF6F5] border-t border-[#DBDBDB]">
       {children}
     </div>
   );

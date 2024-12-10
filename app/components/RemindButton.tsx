@@ -5,9 +5,10 @@ import { PrimaryButton } from "./PrimaryButton";
 
 export function RemindButton({ timeLeft }: { timeLeft: number }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
+  const [hasSetReminder, setHasSetReminder] = useState(false);
 
   const handleRemind = useCallback(async () => {
-    if (status === "loading") return;
+    if (status === "loading" || hasSetReminder) return;
 
     try {
       setStatus("loading");
@@ -40,6 +41,7 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
           });
 
           toast.success("We'll remind you when it's time to yoink!");
+          setHasSetReminder(true);
         }
         setStatus("idle");
       } else if (result.reason === "rejected-by-user") {
@@ -50,16 +52,20 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
       toast.error("Failed to schedule reminder");
       setStatus("idle");
     }
-  }, [timeLeft, status]);
+  }, [timeLeft, status, hasSetReminder]);
 
   return (
     <div className="mt-4 w-full">
       <PrimaryButton
         onClick={handleRemind}
-        disabled={status === "loading"}
+        disabled={status === "loading" || hasSetReminder}
         loading={status === "loading"}
       >
-        {status === "loading" ? "Setting reminder..." : "Remind me"}
+        {status === "loading"
+          ? "Setting reminder..."
+          : hasSetReminder
+            ? "Reminder set"
+            : "Remind me"}
       </PrimaryButton>
     </div>
   );
