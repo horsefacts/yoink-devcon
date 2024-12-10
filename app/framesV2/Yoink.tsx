@@ -8,11 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import Flag from "../../public/flag_simple.png";
 import FlagAvatar from "../../public/flag.png";
-import {
-  useAccount,
-  useSendTransaction,
-  useWaitForTransactionReceipt,
-} from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { RecentActivity } from "./RecentActivity";
 import { revalidateFramesV2 } from "./actions";
 import { YoinkButton } from "../components/YoinkButton";
@@ -107,7 +103,7 @@ function YoinkStart({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              address: account.address,
+              fid: context?.user.fid,
               token: result.notificationDetails.token,
             }),
           });
