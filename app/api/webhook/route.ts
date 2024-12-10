@@ -1,7 +1,7 @@
 import {
-  eventHeaderSchema,
+  encodedJsonFarcasterSignatureSchema,
   eventPayloadSchema,
-  eventSchema,
+  jsonFarcasterSignatureHeaderSchema,
 } from "@farcaster/frame-sdk";
 import { NextRequest } from "next/server";
 import { ed25519 } from "@noble/curves/ed25519";
@@ -16,7 +16,8 @@ import { KEY_REGISTRY_ADDRESS, keyRegistryABI } from "@farcaster/core";
 export async function POST(request: NextRequest) {
   const requestJson = await request.json();
 
-  const requestBody = eventSchema.safeParse(requestJson);
+  const requestBody =
+    encodedJsonFarcasterSignatureSchema.safeParse(requestJson);
 
   if (requestBody.success === false) {
     return Response.json(
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
   const headerData = JSON.parse(
     Buffer.from(requestBody.data.header, "base64url").toString("utf-8"),
   );
-  const header = eventHeaderSchema.safeParse(headerData);
+  const header = jsonFarcasterSignatureHeaderSchema.safeParse(headerData);
   if (header.success === false) {
     return Response.json(
       { success: false, errors: header.error.errors },
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
 
   try {
     switch (payload.data.event) {
-      case "frame-added":
+      case "frame_added":
         if (payload.data.notificationDetails) {
           await setNotificationTokenForFid(
             fid,
@@ -111,12 +112,12 @@ export async function POST(request: NextRequest) {
         }
         break;
 
-      case "frame-removed":
+      case "frame_removed":
         await deleteNotificationTokenForFid(fid);
         console.log(`Removed notification token for fid ${fid}`);
         break;
 
-      case "notifications-enabled":
+      case "notifications_enabled":
         await setNotificationTokenForFid(
           fid,
           payload.data.notificationDetails.token,
@@ -126,7 +127,7 @@ export async function POST(request: NextRequest) {
         );
         break;
 
-      case "notifications-disabled":
+      case "notifications_disabled":
         await deleteNotificationTokenForFid(fid);
         console.log(`Disabled notifications for fid ${fid}`);
         break;

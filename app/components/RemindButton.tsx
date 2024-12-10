@@ -44,7 +44,7 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
           setHasSetReminder(true);
         }
         setStatus("idle");
-      } else if (result.reason === "rejected-by-user") {
+      } else if (result.reason === "rejected_by_user") {
         toast.error("You dismissed the frame request");
         setStatus("idle");
       }
