@@ -18,14 +18,15 @@ export default function RootLayout({
       <body className="max-w-screen-sm mx-auto overflow-x-hidden">
         <WagmiProvider>{children}</WagmiProvider>
         <ToastContainer
-          position="top-center"
+          position="bottom-center"
           theme="light"
           autoClose={2000}
           hideProgressBar={false}
-          newestOnTop={true}
+          newestOnTop={false}
           closeButton={false}
           closeOnClick
           pauseOnHover
+          style={{ bottom: "80px" }}
         />
       </body>
     </html>

@@ -201,13 +201,13 @@ function YoinkStart({
             <div className="mb-1 font-bold text-sm text-center">
               {lastYoinkedBy} has the flag
             </div>
-            {isWarpcastUsername(lastYoinkedBy) && (
+            {/* isWarpcastUsername(lastYoinkedBy) && (
               <div className="mb-3">
                 <PrimaryButton onClick={handleProfileClick}>
                   View Profile
                 </PrimaryButton>
               </div>
-            )}
+            ) */}
             <div className="text-sm">
               The flag has been yoinked{" "}
               <span className="text-[#BA181B]">{totalYoinks} times</span>

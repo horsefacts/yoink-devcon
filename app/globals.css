@@ -35,12 +35,19 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --toastify-color-error: #ba181b;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari and Opera */
+    }
   }
   body {
     @apply bg-background text-foreground;

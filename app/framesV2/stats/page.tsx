@@ -52,7 +52,7 @@ export default async function Page({
 
   return (
     <div className="flex flex-col h-[100vh]">
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div className="flex-1 overflow-hidden p-3 space-y-3">
         <ErrorBoundary>
           <Suspense>
             <UserHeader address={address as Hex} hasFlag />
