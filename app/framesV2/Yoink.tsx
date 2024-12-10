@@ -17,6 +17,7 @@ import { useYoinkData } from "../hooks/api";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useLongPress } from "../hooks/useLongPress";
 import { Hex } from "viem";
+import { ActionButtonContainer } from "../components/ActionButtonContainer";
 
 export default function Yoink() {
   return (
@@ -158,7 +159,7 @@ function YoinkStart({
   }
 
   return (
-    <div className="p-3 pt-9 flex flex-col items-center h-[100vh] justify-between">
+    <div className="p-3 pt-9 flex flex-col items-center min-h-[100vh] pb-[80px]">
       <div className="pb-8 px-8 flex flex-col items-center">
         <div className="relative mb-1">
           <div
@@ -207,15 +208,7 @@ function YoinkStart({
       </div>
       <RecentActivity />
       <div className="flex flex-col grow"></div>
-      {/*
-        <div
-          className="rounded-lg text-sm font-semibold bg-slate-200 py-3 w-full text-center"
-          onClick={addFrame}
-        >
-          Add Frame
-        </div>
-      */}
-      <div className="mt-4 w-full">
+      <ActionButtonContainer>
         <YoinkButton
           onTimeLeft={setTimeLeft}
           onYoinkSuccess={(txHash: Hex) => {
@@ -224,7 +217,7 @@ function YoinkStart({
             router.push(`/framesV2/yoinked?address=${account.address}`);
           }}
         />
-      </div>
+      </ActionButtonContainer>
     </div>
   );
 }
@@ -271,15 +264,15 @@ function TimeLeft({
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center pb-[80px]">
       <div className="text-xl font-bold mb-1">🐎 hold yer horses</div>
       <div className="text-7xl font-black text-[#BA181B] uppercase mb-1 font-mono">
         {formatTime(timeLeft)}
       </div>
       <div className="text-sm font-semibold">before you can yoink again</div>
-      <div className="flex-shrink-0 p-3">
+      <ActionButtonContainer>
         <RemindButton timeLeft={timeLeft} />
-      </div>
+      </ActionButtonContainer>
     </div>
   );
 }
