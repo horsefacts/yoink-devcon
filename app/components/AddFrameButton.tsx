@@ -26,7 +26,12 @@ export function AddFrameButton() {
   });
 
   const handleAddFrame = useCallback(async () => {
-    if (status === "loading" || status === "success") return;
+    if (status === "loading") return;
+
+    if (status === "success" || data?.hasToken) {
+      await sdk.actions.close();
+      return;
+    }
 
     try {
       setStatus("loading");
@@ -63,27 +68,21 @@ export function AddFrameButton() {
       setStatus("error");
       setErrorMessage("Failed to store notification token");
     }
-  }, [status, queryClient]);
-
-  if (isLoading || data?.hasToken) {
-    return null;
-  }
+  }, [status, queryClient, data?.hasToken]);
 
   return (
     <div className="flex flex-col items-center gap-2">
       <PrimaryButton
         onClick={handleAddFrame}
-        disabled={status === "loading" || status === "success"}
+        disabled={status === "loading"}
         loading={status === "loading"}
       >
-        {status === "loading" ? "Adding frame..." : "Add Frame"}
+        {status === "loading"
+          ? "Adding frame..."
+          : status === "success" || data?.hasToken
+            ? "Close"
+            : "Add Frame"}
       </PrimaryButton>
-
-      {status === "success" && (
-        <div className="text-sm text-green-600 font-medium">
-          Frame added successfully!
-        </div>
-      )}
 
       {status === "error" && (
         <div className="text-sm text-red-600 font-medium">{errorMessage}</div>

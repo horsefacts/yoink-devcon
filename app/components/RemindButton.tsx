@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { toast } from "react-toastify";
@@ -8,7 +10,12 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
   const [hasSetReminder, setHasSetReminder] = useState(false);
 
   const handleRemind = useCallback(async () => {
-    if (status === "loading" || hasSetReminder) return;
+    if (status === "loading") return;
+
+    if (hasSetReminder) {
+      await sdk.actions.close();
+      return;
+    }
 
     try {
       setStatus("loading");
@@ -58,13 +65,13 @@ export function RemindButton({ timeLeft }: { timeLeft: number }) {
     <div className="mt-4 w-full">
       <PrimaryButton
         onClick={handleRemind}
-        disabled={status === "loading" || hasSetReminder}
+        disabled={status === "loading"}
         loading={status === "loading"}
       >
         {status === "loading"
           ? "Setting reminder..."
           : hasSetReminder
-            ? "Reminder set"
+            ? "Close"
             : "Remind me"}
       </PrimaryButton>
     </div>
