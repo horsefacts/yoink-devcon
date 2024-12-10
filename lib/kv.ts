@@ -120,7 +120,7 @@ export const scheduleReminder = async (
 export const getScheduledReminders = async () => {
   const now = Math.floor(Date.now() / 1000);
 
-  const dueReminders = await redis.zrange<ReminderId[]>(
+  const dueReminders = await redis.zrange<`${string}:${string}`[]>(
     "notification:scheduled_reminders",
     0,
     now,
@@ -132,9 +132,9 @@ export const getScheduledReminders = async () => {
   const reminders: Array<{ id: string; fid: number; sendAt: number }> = [];
 
   for (const id of dueReminders) {
-    const state = await redis.get(`notification:state:${id}`);
+    const state = await redis.get(`notification:state:reminder:${id}`);
     if (state === "scheduled") {
-      const [_, fid, sendAtStr] = id.split(":");
+      const [fid, sendAtStr] = id.split(":");
       if (fid && sendAtStr) {
         reminders.push({
           id,
