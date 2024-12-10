@@ -16,10 +16,7 @@ async function processReminder(reminder: {
   await setNotificationState("reminder", reminder.id, "pending");
 
   const notificationToken = await getNotificationTokenForFid(reminder.fid);
-  if (!notificationToken) {
-    await setNotificationState("reminder", reminder.id, "skipped");
-    return;
-  }
+  if (!notificationToken) return;
 
   const apiUUID = uuidv4();
 

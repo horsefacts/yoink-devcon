@@ -4,6 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { useNotificationToken } from "../hooks/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { PrimaryButton } from "./PrimaryButton";
 
 export function AddFrameButton() {
   const queryClient = useQueryClient();
@@ -68,17 +69,13 @@ export function AddFrameButton() {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <button
+      <PrimaryButton
         onClick={handleAddFrame}
         disabled={status === "loading" || status === "success"}
-        className={`w-full px-4 py-3 bg-slate-200 text-sm font-semibold rounded-lg text-center transition-colors ${
-          status === "loading" || status === "success"
-            ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-slate-300"
-        }`}
+        loading={status === "loading"}
       >
         {status === "loading" ? "Adding frame..." : "Add Frame"}
-      </button>
+      </PrimaryButton>
 
       {status === "success" && (
         <div className="text-sm text-green-600 font-medium">

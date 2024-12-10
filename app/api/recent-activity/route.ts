@@ -46,16 +46,10 @@ async function processNotifications(
       if (!acquired) continue;
 
       const user = await getUserByAddress(yoink.from);
-      if (!user?.fid) {
-        await setNotificationState("yoink", yoink.id, "skipped");
-        continue;
-      }
+      if (!user?.fid) continue;
 
       const notificationToken = await getNotificationTokenForFid(user.fid);
-      if (!notificationToken) {
-        await setNotificationState("yoink", yoink.id, "skipped");
-        continue;
-      }
+      if (!notificationToken) continue;
 
       const username =
         recentActivity?.find(
