@@ -60,6 +60,7 @@ function YoinkStart({
   const [hash, setHash] = useState<Hex>();
   const [context, setContext] = useState<FrameContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
+  const [yoinkStartTime, setYoinkStartTime] = useState<number>();
 
   const txReceiptResult = useWaitForTransactionReceipt({ hash });
 
@@ -78,18 +79,37 @@ function YoinkStart({
   }, [init, pfp]);
 
   useEffect(() => {
-    if (txReceiptResult.isLoading) {
+    if (txReceiptResult.isLoading && !yoinkStartTime) {
+      setYoinkStartTime(Date.now());
       setTimeLeft(undefined);
     }
-  }, [txReceiptResult.isLoading]);
+  }, [txReceiptResult.isLoading, yoinkStartTime]);
 
   useEffect(() => {
-    if (txReceiptResult.isSuccess) {
-      void revalidateFramesV2();
-      queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
-      router.push(`/framesV2/yoinked?address=${account.address}`);
+    if (txReceiptResult.isSuccess && yoinkStartTime) {
+      const elapsed = Date.now() - yoinkStartTime;
+      const minDisplayTime = 3000;
+
+      if (elapsed < minDisplayTime) {
+        const timeout = setTimeout(() => {
+          void revalidateFramesV2();
+          queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
+          router.push(`/framesV2/yoinked?address=${account.address}`);
+        }, minDisplayTime - elapsed);
+        return () => clearTimeout(timeout);
+      } else {
+        void revalidateFramesV2();
+        queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
+        router.push(`/framesV2/yoinked?address=${account.address}`);
+      }
     }
-  }, [account.address, router, txReceiptResult.isSuccess, queryClient]);
+  }, [
+    account.address,
+    router,
+    txReceiptResult.isSuccess,
+    queryClient,
+    yoinkStartTime,
+  ]);
 
   const addFrame = useCallback(async () => {
     try {
