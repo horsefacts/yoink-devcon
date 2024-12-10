@@ -88,27 +88,30 @@ function YoinkStart({
   }, [txReceiptResult.isLoading, yoinkStartTime]);
 
   useEffect(() => {
+    if (txReceiptResult.isLoading && !yoinkStartTime) {
+      setYoinkStartTime(Date.now());
+      setTimeLeft(undefined);
+    }
+
     if (txReceiptResult.isSuccess && yoinkStartTime) {
       const elapsed = Date.now() - yoinkStartTime;
       const minDisplayTime = 3000;
+      const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
-      if (elapsed < minDisplayTime) {
-        const timeout = setTimeout(() => {
-          void revalidateFramesV2();
-          queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
-          router.push(`/framesV2/yoinked?address=${account.address}`);
-        }, minDisplayTime - elapsed);
-        return () => clearTimeout(timeout);
-      } else {
+      // Always wait for the minimum display time, even if tx confirms faster
+      const timeout = setTimeout(() => {
         void revalidateFramesV2();
         queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
         router.push(`/framesV2/yoinked?address=${account.address}`);
-      }
+      }, remainingTime);
+
+      return () => clearTimeout(timeout);
     }
   }, [
     account.address,
     router,
     txReceiptResult.isSuccess,
+    txReceiptResult.isLoading,
     queryClient,
     yoinkStartTime,
   ]);
