@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { WagmiProvider } from "./WagmiProvider";
 import { ToastContainer } from "react-toastify";
+import { Slide } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Yoink!",
@@ -21,11 +22,12 @@ export default function RootLayout({
           position="bottom-center"
           theme="light"
           autoClose={2000}
-          hideProgressBar={false}
+          hideProgressBar={true}
           newestOnTop={false}
           closeButton={false}
           closeOnClick
           pauseOnHover
+          transition={Slide}
           style={{ bottom: "80px" }}
         />
       </body>

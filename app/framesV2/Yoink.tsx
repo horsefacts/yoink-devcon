@@ -95,7 +95,7 @@ function YoinkStart({
 
     if (txReceiptResult.isSuccess && yoinkStartTime) {
       const elapsed = Date.now() - yoinkStartTime;
-      const minDisplayTime = 3000;
+      const minDisplayTime = 5000;
       const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
       const timeout = setTimeout(() => {

@@ -53,3 +53,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.Toastify__toast-container {
+  z-index: 10 !important;
+}
