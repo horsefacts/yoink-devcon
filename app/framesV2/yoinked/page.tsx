@@ -22,7 +22,7 @@ export default async function Page({
       <div className="flex-1 overflow-hidden p-3 space-y-3">
         <ErrorBoundary>
           <Suspense>
-            <UserHeader address={address as Hex} hasFlag />
+            <UserHeader address={address as Hex} />
             <TotalYoinks />
             <LeaderboardToggle address={address as string} />
           </Suspense>

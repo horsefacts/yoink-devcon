@@ -98,7 +98,6 @@ function YoinkStart({
       const minDisplayTime = 3000;
       const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
-      // Always wait for the minimum display time, even if tx confirms faster
       const timeout = setTimeout(() => {
         void revalidateFramesV2();
         queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
