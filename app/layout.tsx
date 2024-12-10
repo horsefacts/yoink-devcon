@@ -28,7 +28,7 @@ export default function RootLayout({
           closeOnClick
           pauseOnHover
           transition={Slide}
-          style={{ bottom: "80px" }}
+          style={{ bottom: "100px" }}
         />
       </body>
     </html>
