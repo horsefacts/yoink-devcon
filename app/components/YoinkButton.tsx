@@ -81,6 +81,7 @@ export function YoinkButton({
       const txHash = await sendTransaction({
         to: txData.params.to,
         data: txData.params.data,
+        chainId: 8453,
       });
       onYoinkSuccess?.(txHash);
 
