@@ -216,6 +216,10 @@ function TimeLeft({
   timeLeft: number;
   setTimeLeft: (v: number) => void;
 }) {
+  const router = useRouter();
+  const account = useAccount();
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (timeLeft > 0) {
       const interval = setInterval(() => {
@@ -234,7 +238,14 @@ function TimeLeft({
             YOINK!
           </div>
         </div>
-        <YoinkButton onTimeLeft={setTimeLeft} />
+        <YoinkButton
+          onTimeLeft={setTimeLeft}
+          onYoinkSuccess={() => {
+            void revalidateFramesV2();
+            queryClient.invalidateQueries({ queryKey: ["yoink-data"] });
+            router.push(`/framesV2/yoinked?address=${account.address}`);
+          }}
+        />
       </>
     );
   }

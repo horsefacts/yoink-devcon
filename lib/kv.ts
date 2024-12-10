@@ -107,7 +107,10 @@ export const scheduleReminder = async (
 
   multi
     .set(`notification:state:${id}`, "scheduled")
-    .zadd("notification:scheduled_reminders", { score: sendAt, member: id });
+    .zadd("notification:scheduled_reminders", {
+      score: sendAt,
+      member: `${fid}:${sendAt}`,
+    });
 
   await multi.exec();
 
