@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { UserStatsResponse } from "../api/user-stats/route";
 import { TotalYoinksResponse } from "../api/total-yoinks/route";
 import { LeaderboardEntryWithUserData } from "../../lib/contract";
@@ -77,5 +77,16 @@ export function useYoinkData() {
       }
       return response.json() as Promise<YoinkDataResponse>;
     },
+  });
+}
+
+export function useNotificationToken({ fid }: { fid?: number }) {
+  return useQuery({
+    queryKey: ["notification-token"],
+    queryFn: async () => {
+      const res = await fetch(`/api/has-notification-token?fid=${fid}`);
+      return res.json();
+    },
+    enabled: !!fid,
   });
 }
