@@ -9,7 +9,7 @@ import {
   setNotificationTokenForFid,
   deleteNotificationTokenForFid,
 } from "../../../lib/kv";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, Hex } from "viem";
 import { optimism } from "viem/chains";
 import { KEY_REGISTRY_ADDRESS, keyRegistryABI } from "@farcaster/core";
 
@@ -56,8 +56,6 @@ export async function POST(request: NextRequest) {
   const signature = new Uint8Array(
     Buffer.from(requestBody.data.signature, "base64url"),
   );
-  console.log("requestBody", requestBody);
-  console.log("header", header);
   const verifyResult = ed25519.verify(
     signature,
     signedInput,
@@ -78,13 +76,11 @@ export async function POST(request: NextRequest) {
   });
 
   try {
-    const hexKey =
-      `0x${Buffer.from(header.data.key, "base64url").toString("hex")}` as const;
     const keyData = await optimismClient.readContract({
       address: KEY_REGISTRY_ADDRESS,
       abi: keyRegistryABI,
       functionName: "keyDataOf",
-      args: [BigInt(fid), hexKey],
+      args: [BigInt(fid), header.data.key as Hex],
     });
 
     if (!keyData || keyData.keyType !== 1 || keyData.state !== 1) {
