@@ -56,6 +56,10 @@ export async function POST(request: NextRequest) {
   const signature = new Uint8Array(
     Buffer.from(requestBody.data.signature, "base64url"),
   );
+  console.log("requestBody", requestBody);
+  console.log("signedInput", signedInput);
+  console.log("raw signature", requestBody.data.signature);
+  console.log("signature", signature);
   const verifyResult = ed25519.verify(signature, signedInput, header.data.key);
 
   if (!verifyResult) {
