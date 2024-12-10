@@ -47,7 +47,7 @@ export const setNotificationState = async (
     type === "reminder" &&
     (state === "sent" || state === "failed" || state === "skipped")
   ) {
-    multi.zrem("notification:scheduled_reminders", notificationId);
+    multi.zrem("notification:scheduled_reminders", id);
   }
 
   if (state === "sent" && apiUUID) {
