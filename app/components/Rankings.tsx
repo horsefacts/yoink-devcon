@@ -36,7 +36,7 @@ export function Rankings({ address }: { address: string }) {
                 {rank.pfpUrl ? (
                   <Image
                     src={rank.pfpUrl}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-center"
                     alt={rank.username ?? rank.address}
                     height={38}
                     width={38}

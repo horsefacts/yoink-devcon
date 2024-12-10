@@ -20,7 +20,7 @@ export function Leaderboard() {
               {leader.pfpUrl && (
                 <Image
                   src={leader.pfpUrl}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover object-center"
                   alt={leader.username ?? leader.address}
                   height={38}
                   width={38}

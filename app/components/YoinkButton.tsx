@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react";
-import { useAccount, useSendTransaction } from "wagmi";
-import { BaseError, Hex } from "viem";
+import { useAccount, usePublicClient, useWriteContract } from "wagmi";
+import { BaseError, ContractFunctionRevertedError, Hex } from "viem";
 import { useConnect, useSwitchChain, useChainId } from "wagmi";
 import { base } from "viem/chains";
 import { PrimaryButton } from "./PrimaryButton";
 import { toast } from "react-toastify";
+import { abi, YOINK_ADDRESS } from "../../lib/constants";
+import { formatDuration } from "../../lib/time";
 
 type ButtonState = {
   text: string;
@@ -28,7 +30,8 @@ export function YoinkButton({
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
   const account = useAccount();
-  const { sendTransactionAsync: sendTransaction } = useSendTransaction();
+  const { writeContractAsync: writeContract } = useWriteContract();
+  const publicClient = usePublicClient();
 
   const [buttonState, setButtonState] = useState<ButtonState>({
     text: "Yoink",
@@ -38,7 +41,56 @@ export function YoinkButton({
   });
 
   const yoinkOnchain = useCallback(async () => {
+    if (!publicClient || !account.address) return;
+
     try {
+      onYoinkStart?.();
+
+      // Simulate the transaction
+      try {
+        await publicClient.simulateContract({
+          address: YOINK_ADDRESS,
+          abi: abi,
+          functionName: "yoink",
+          account: account.address,
+          chain: base,
+        });
+      } catch (err) {
+        if (err instanceof BaseError) {
+          const revertError = err.walk(
+            (err) => err instanceof ContractFunctionRevertedError,
+          );
+          if (revertError instanceof ContractFunctionRevertedError) {
+            const errorName = revertError.data?.errorName ?? "";
+            if (errorName === "Unauthorized") {
+              setButtonState({
+                text: "Yoink",
+                disabled: false,
+                loading: false,
+                hidden: false,
+              });
+              toast.error("You have the flag. You can't yoink from yourself.");
+              return;
+            } else if (errorName === "SlowDown") {
+              const [timeLeft] = revertError.data?.args ?? [];
+              setButtonState({
+                text: "Yoink",
+                disabled: true,
+                loading: false,
+                hidden: false,
+              });
+              onTimeLeft?.(Number(timeLeft));
+              toast.error(
+                `You're yoinking too fast. Try again in ${formatDuration(Number(timeLeft))}.`,
+              );
+              return;
+            }
+          }
+          throw err;
+        }
+      }
+
+      // Proceed with transaction
       setButtonState({
         text: "Yoink",
         disabled: true,
@@ -46,45 +98,11 @@ export function YoinkButton({
         hidden: false,
       });
 
-      onYoinkStart?.();
-
-      const params = new URLSearchParams({
-        address: account.address ?? "unknown",
+      const txHash = await writeContract({
+        address: YOINK_ADDRESS,
+        abi: abi,
+        functionName: "yoink",
       });
-
-      const res = await fetch(`/api/yoink-tx?${params}`, {
-        cache: "no-store",
-      });
-      if (res.status !== 200) {
-        const error = await res.json();
-
-        if (error.timeLeft) {
-          setButtonState({
-            text: "Yoink",
-            disabled: true,
-            loading: false,
-            hidden: false,
-          });
-          onTimeLeft?.(error.timeLeft);
-        } else {
-          setButtonState({
-            text: "Yoink",
-            disabled: false,
-            loading: false,
-            hidden: false,
-          });
-          toast.error(error.message);
-        }
-        return;
-      }
-
-      const txData = await res.json();
-      const txHash = await sendTransaction({
-        to: txData.params.to,
-        data: txData.params.data,
-        chainId: 8453,
-      });
-      onYoinkSuccess?.(txHash);
 
       setButtonState({
         text: "Yoinking",
@@ -92,6 +110,8 @@ export function YoinkButton({
         loading: true,
         hidden: true,
       });
+
+      onYoinkSuccess?.(txHash);
     } catch (e) {
       setButtonState({
         text: "Yoink",
@@ -102,9 +122,8 @@ export function YoinkButton({
 
       if (e instanceof BaseError) {
         if (
-          e.details &&
-          (e.details.startsWith("User denied request") ||
-            e.details.startsWith("User rejected request"))
+          e.details?.startsWith("User denied") ||
+          e.details?.startsWith("User rejected")
         ) {
           return;
         }
@@ -113,8 +132,9 @@ export function YoinkButton({
       console.error(e);
     }
   }, [
+    publicClient,
     account.address,
-    sendTransaction,
+    writeContract,
     onYoinkStart,
     onYoinkSuccess,
     onTimeLeft,
@@ -167,13 +187,15 @@ export function YoinkButton({
   ]);
 
   return (
-    <PrimaryButton
-      onClick={handleYoink}
-      disabled={buttonState.disabled}
-      loading={buttonState.loading}
-      hidden={buttonState.hidden}
-    >
-      {buttonState.text}
-    </PrimaryButton>
+    <div className="flex flex-col items-center gap-2">
+      <PrimaryButton
+        onClick={handleYoink}
+        disabled={buttonState.disabled}
+        loading={buttonState.loading}
+        hidden={buttonState.hidden}
+      >
+        {buttonState.text}
+      </PrimaryButton>
+    </div>
   );
 }

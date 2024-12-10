@@ -29,7 +29,7 @@ export function UserHeader(props: {
             <Image
               src={stats.pfpUrl ?? FlagAvatar}
               alt="pfp"
-              className="rounded-full"
+              className="h-full w-full object-cover object-center rounded-full"
               width="64"
               height="64"
             />
