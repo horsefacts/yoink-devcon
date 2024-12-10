@@ -41,7 +41,7 @@ export const setNotificationState = async (
 
   const multi = redis.multi();
 
-  multi.set(`notification:${type}:state:${notificationId}`, state);
+  multi.set(`notification:state:${notificationId}`, state);
 
   if (
     type === "reminder" &&
@@ -51,18 +51,15 @@ export const setNotificationState = async (
   }
 
   if (state === "sent" && apiUUID) {
-    multi.set(`notification:${type}:uuid:${apiUUID}`, notificationId);
-    multi.expire(
-      `notification:${type}:state:${notificationId}`,
-      60 * 60 * 24 * 30,
-    );
+    multi.set(`notification:uuid:${apiUUID}`, notificationId);
+    multi.expire(`notification:state:${notificationId}`, 60 * 60 * 24 * 30);
   }
 
   return multi.exec();
 };
 
 export const getYoinkIdFromApiUUID = async (apiUUID: string) => {
-  return redis.get<string>(`notification:yoink:uuid:${apiUUID}`);
+  return redis.get<string>(`notification:uuid:${apiUUID}`);
 };
 
 export const markNotificationPending = async (
@@ -75,7 +72,7 @@ export const markNotificationPending = async (
       : (`reminder:${id}` as ReminderId);
 
   const result = await redis.setnx(
-    `notification:${type}:state:${notificationId}`,
+    `notification:state:${notificationId}`,
     "pending",
   );
   return result === 1;
@@ -132,7 +129,7 @@ export const getScheduledReminders = async () => {
   const reminders: Array<{ id: string; fid: number; sendAt: number }> = [];
 
   for (const id of dueReminders) {
-    const state = await redis.get(`notification:reminder:state:${id}`);
+    const state = await redis.get(`notification:state:${id}`);
     if (state === "scheduled") {
       const [_, fid, sendAtStr] = id.split(":");
       if (fid && sendAtStr) {
