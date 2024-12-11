@@ -14,7 +14,6 @@ export const revalidate = 300;
 export default async function Image() {
   const totalYoinks = await getTotalYoinks();
   const yoinkers = await getRecentYoinkers(10);
-  console.log("yoinkers", yoinkers);
 
   return new ImageResponse(
     (
@@ -51,6 +50,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    },
+    }
   );
 }
