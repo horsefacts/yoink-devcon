@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { getNotificationTokenForFid } from "../../../lib/kv";
+import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 
-export async function POST(request: Request) {
+// Wrap the handler function and export with verification
+async function handler(request: Request) {
   const body = await request.json();
   const { reminderId, fid } = body;
 
   try {
     const notificationToken = await getNotificationTokenForFid(fid);
     if (!notificationToken) {
-      return new Response(JSON.stringify({ status: "no_token" }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return NextResponse.json({ status: "no_token" });
     }
 
     await fetch("https://api.warpcast.com/v1/frame-notifications", {
@@ -27,14 +27,14 @@ export async function POST(request: Request) {
       }),
     });
 
-    return new Response(JSON.stringify({ status: "sent" }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ status: "sent" });
   } catch (error) {
     console.error("Error processing reminder notification:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
+
+export const POST = verifySignatureAppRouter(handler);

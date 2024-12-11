@@ -1,24 +1,21 @@
 import { NextResponse } from "next/server";
 import { getNotificationTokenForFid } from "../../../lib/kv";
 import { getUserByAddress } from "../../../lib/neynar";
+import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 
-export async function POST(request: Request) {
+async function handler(request: Request) {
   const body = await request.json();
   const { yoinkId, from, username } = body;
 
   try {
     const user = await getUserByAddress(from);
     if (!user?.fid) {
-      return new Response(JSON.stringify({ status: "no_fid" }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return NextResponse.json({ status: "no_fid" });
     }
 
     const notificationToken = await getNotificationTokenForFid(user.fid);
     if (!notificationToken) {
-      return new Response(JSON.stringify({ status: "no_token" }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return NextResponse.json({ status: "no_token" });
     }
 
     await fetch("https://api.warpcast.com/v1/frame-notifications", {
@@ -35,14 +32,14 @@ export async function POST(request: Request) {
       }),
     });
 
-    return new Response(JSON.stringify({ status: "sent" }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ status: "sent" });
   } catch (error) {
     console.error("Error processing yoink notification:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
+
+export const POST = verifySignatureAppRouter(handler);
