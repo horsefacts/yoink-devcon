@@ -27,3 +27,11 @@ export async function queueMessage({
     deduplicationId: messageId.replace(":", "_"),
   });
 }
+
+export async function scheduleNotificationProcessing() {
+  return client.publishJSON({
+    url: `${process.env.APP_URL}/api/process-notifications`,
+    cron: "* * * * *",
+    retries: 3,
+  });
+}

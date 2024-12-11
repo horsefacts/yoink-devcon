@@ -19,3 +19,11 @@ export const getNotificationTokenForFid = async (fid: number) => {
 export const deleteNotificationTokenForFid = async (fid: number) => {
   return redis.del(`tokens:fid:${fid}`);
 };
+
+export const getLastProcessedYoinkId = async () => {
+  return redis.get<string>("notifications:last_yoink");
+};
+
+export const setLastProcessedYoinkId = async (id: string) => {
+  return redis.set("notifications:last_yoink", id);
+};

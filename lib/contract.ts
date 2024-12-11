@@ -182,3 +182,13 @@ export const getAddressRankings = async (
   );
   return response.json();
 };
+
+export const getYoinksSinceId = async (
+  sinceId: string,
+): Promise<YoinkEvent[]> => {
+  const response = await fetch(
+    `https://yoink-indexer-production.up.railway.app/yoinks-since/${sinceId}`,
+    { cache: "no-store" },
+  );
+  return response.json();
+};

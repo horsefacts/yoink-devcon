@@ -8,7 +8,8 @@
     "dev:monorepo": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "node --loader ts-node/esm ./scripts/schedule-notifications.ts"
   },
   "dependencies": {
     "@farcaster/core": "^0.15.6",
@@ -49,6 +50,8 @@
     "autoprefixer": "^10.0.1",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.5",
+    "esbuild": "^0.24.0",
+    "esbuild-register": "^3.6.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^9.1.0",
@@ -57,6 +60,7 @@
     "postcss": "^8",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }
