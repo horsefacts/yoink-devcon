@@ -13,7 +13,6 @@ async function handler(request: Request) {
     if (!user?.fid) {
       return NextResponse.json({ status: "no_fid" });
     }
-    console.log(user);
 
     const notificationToken = await getNotificationTokenForFid(user.fid);
     if (!notificationToken) {
@@ -33,8 +32,6 @@ async function handler(request: Request) {
         tokens: [notificationToken],
       }),
     });
-    console.log(res);
-    console.log(await res.json());
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
