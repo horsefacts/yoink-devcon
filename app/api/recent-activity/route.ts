@@ -4,17 +4,12 @@ import {
   getTotalYoinks,
 } from "../../../lib/contract";
 import {
-  setNotificationState,
-  markNotificationPending,
-  getNotificationTokenForFid,
-} from "../../../lib/kv";
-import {
   getUserByAddress,
   getYoinksWithUsernames,
   truncateAddress,
 } from "../../../lib/neynar";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
+import { queueMessage } from "../../../lib/queue";
 
 export const dynamic = "force-dynamic";
 
@@ -42,44 +37,23 @@ async function processNotifications(
 ) {
   try {
     for (const yoink of recentYoinks) {
-      const acquired = await markNotificationPending("yoink", yoink.id);
-      if (!acquired) continue;
-
-      const user = await getUserByAddress(yoink.from);
-      if (!user?.fid) continue;
-
-      const notificationToken = await getNotificationTokenForFid(user.fid);
-      if (!notificationToken) continue;
-
       const username =
         recentActivity?.find(
           (activity) => activity.by && activity.timestamp === yoink.timestamp,
         )?.by ?? "Someone";
 
-      const apiUUID = uuidv4();
-
-      try {
-        await fetch("https://api.warpcast.com/v1/frame-notifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            notificationId: apiUUID,
-            title: "You've been Yoinked!",
-            body: `${username} yoinked the flag from you. Yoink it back!`,
-            targetUrl: "https://yoink.party/framesV2/",
-            tokens: [notificationToken],
-          }),
-        });
-        await setNotificationState("yoink", yoink.id, "sent", apiUUID);
-      } catch (error) {
-        console.error("Error sending notification:", error);
-        await setNotificationState("yoink", yoink.id, "failed");
-      }
+      await queueMessage({
+        url: "/api/process-yoink",
+        body: {
+          yoinkId: `yoink:${yoink.id}`,
+          from: yoink.from,
+          by: yoink.by,
+          username,
+        },
+      });
     }
   } catch (error) {
-    console.error("Error processing notifications:", error);
+    console.error("Error queueing notifications:", error);
   }
 }
 

@@ -2930,6 +2930,15 @@
     encoding "^0.1.13"
     utf-8-validate "^5.0.8"
 
+"@upstash/qstash@^2.7.19":
+  version "2.7.19"
+  resolved "https://registry.yarnpkg.com/@upstash/qstash/-/qstash-2.7.19.tgz#0416ebf78fabf999f7acc7084e16f85726031fce"
+  integrity sha512-OIcuvzsz8oLO0J3b/yj4UoBwvfunLTtIgub8yTjhCgTKUcn4boRBjDUHIDteSsWBS+ZRvvORBp2mJ5SkuASuXQ==
+  dependencies:
+    crypto-js ">=4.2.0"
+    jose "^5.2.3"
+    neverthrow "^7.0.1"
+
 "@upstash/redis@1.25.1":
   version "1.25.1"
   resolved "https://registry.yarnpkg.com/@upstash/redis/-/redis-1.25.1.tgz#361656a326b40d5816640ae4335a8b1bbbb0d238"
@@ -4662,7 +4671,7 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   dependencies:
     uncrypto "^0.1.3"
 
-crypto-js@^4.2.0:
+crypto-js@>=4.2.0, crypto-js@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
@@ -6697,6 +6706,11 @@ jiti@^2.1.2:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.4.0.tgz#393d595fb6031a11d11171b5e4fc0b989ba3e053"
   integrity sha512-H5UpaUI+aHOqZXlYOaFP/8AzKsg+guWu+Pr3Y8i7+Y3zr1aXAvCvTAQ1RxSc6oVD8R8c7brgNtTVP91E7upH/g==
 
+jose@^5.2.3:
+  version "5.9.6"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.9.6.tgz#77f1f901d88ebdc405e57cce08d2a91f47521883"
+  integrity sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==
+
 jotai@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.4.0.tgz#0f350f65a968dd3ee2f9ad3618a3af635cd10220"
@@ -7313,6 +7327,11 @@ neverthrow@^6.0.0:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-6.2.2.tgz#1d905abe20ef8882e4b195c7851787aa4553cf0e"
   integrity sha512-POR1FACqdK9jH0S2kRPzaZEvzT11wsOxLW520PQV/+vKi9dQe+hXq19EiOvYx7lSRaF5VB9lYGsPInynrnN05w==
+
+neverthrow@^7.0.1:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-7.2.0.tgz#76fa0a6cf1f6d59f0770df461c92b8b270910694"
+  integrity sha512-iGBUfFB7yPczHHtA8dksKTJ9E8TESNTAx1UQWW6TzMF280vo9jdPYpLUXrMN1BCkPdHFdNG3fxOt2CUad8KhAw==
 
 next@14.1.4:
   version "14.1.4"

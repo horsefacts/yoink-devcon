@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scheduleReminder } from "../../../lib/kv";
+import { queueMessage } from "../../../lib/queue";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,16 @@ export async function POST(request: NextRequest) {
     }
 
     const sendAt = Math.floor(Date.now() / 1000) + timeLeft;
-    await scheduleReminder(fid, sendAt);
+    const reminderId = `reminder:${fid}:${sendAt}`;
+
+    await queueMessage({
+      url: "/api/process-reminder",
+      body: {
+        reminderId,
+        fid,
+      },
+      notBefore: sendAt,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
