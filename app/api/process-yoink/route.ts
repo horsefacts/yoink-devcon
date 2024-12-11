@@ -9,12 +9,16 @@ export async function POST(request: Request) {
   try {
     const user = await getUserByAddress(from);
     if (!user?.fid) {
-      return NextResponse.json({ status: "no_fid" });
+      return new Response(JSON.stringify({ status: "no_fid" }), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const notificationToken = await getNotificationTokenForFid(user.fid);
     if (!notificationToken) {
-      return NextResponse.json({ status: "no_token" });
+      return new Response(JSON.stringify({ status: "no_token" }), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     await fetch("https://api.warpcast.com/v1/frame-notifications", {
@@ -31,9 +35,14 @@ export async function POST(request: Request) {
       }),
     });
 
-    return NextResponse.json({ status: "sent" });
+    return new Response(JSON.stringify({ status: "sent" }), {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Error processing yoink notification:", error);
-    throw error;
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
