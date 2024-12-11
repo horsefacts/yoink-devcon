@@ -26,40 +26,6 @@ export type YoinkDataResponse = {
   recentActivity?: YoinkActivity[];
 };
 
-async function processNotifications(
-  recentYoinks: Array<{
-    id: string;
-    by: string;
-    from: string;
-    timestamp: number;
-  }>,
-  recentActivity?: YoinkActivity[],
-) {
-  try {
-    for (const yoink of recentYoinks) {
-      const username =
-        recentActivity?.find(
-          (activity) => activity.by && activity.timestamp === yoink.timestamp,
-        )?.by ?? "Someone";
-
-      const yoinkId = `yoink:${yoink.id}`;
-      const res = await queueMessage({
-        messageId: yoinkId,
-        url: "api/process-yoink",
-        body: {
-          yoinkId,
-          from: yoink.from,
-          by: yoink.by,
-          username,
-        },
-      });
-      console.log(res);
-    }
-  } catch (error) {
-    console.error("Error queueing notifications:", error);
-  }
-}
-
 export async function GET() {
   try {
     const [lastYoinkedBy, totalYoinks, recentYoinks] = await Promise.all([
@@ -75,8 +41,6 @@ export async function GET() {
     } catch (error) {
       console.error("Error converting addresses to usernames:", error);
     }
-
-    processNotifications(recentYoinks, recentActivity);
 
     const user = await getUserByAddress(lastYoinkedBy);
     const username = user ? user.username : truncateAddress(lastYoinkedBy);

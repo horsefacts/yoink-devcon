@@ -35,7 +35,7 @@ async function handler() {
       const yoinkId = `yoink:${yoink.id}`;
       console.log(`Queueing notification for yoink ${yoinkId} by ${username}`);
 
-      /*await queueMessage({
+      await queueMessage({
         messageId: yoinkId,
         url: "api/process-yoink",
         body: {
@@ -44,12 +44,6 @@ async function handler() {
           by: yoink.by,
           username,
         },
-      });*/
-      console.log("Queued message:", {
-        yoinkId,
-        from: yoink.from,
-        by: yoink.by,
-        username,
       });
     }
 
