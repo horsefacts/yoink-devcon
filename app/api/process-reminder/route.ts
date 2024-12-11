@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getNotificationTokenForFid } from "../../../lib/kv";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 
-// Wrap the handler function and export with verification
 async function handler(request: Request) {
   const body = await request.json();
   const { reminderId, fid } = body;

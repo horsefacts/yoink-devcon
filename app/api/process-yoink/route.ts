@@ -33,6 +33,7 @@ async function handler(request: Request) {
       }),
     });
     console.log(res);
+    console.log(await res.json());
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
