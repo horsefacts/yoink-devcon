@@ -12,13 +12,14 @@ async function handler(request: Request) {
     if (!user?.fid) {
       return NextResponse.json({ status: "no_fid" });
     }
+    console.log(user);
 
     const notificationToken = await getNotificationTokenForFid(user.fid);
     if (!notificationToken) {
       return NextResponse.json({ status: "no_token" });
     }
 
-    await fetch("https://api.warpcast.com/v1/frame-notifications", {
+    const res = await fetch("https://api.warpcast.com/v1/frame-notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,6 +32,7 @@ async function handler(request: Request) {
         tokens: [notificationToken],
       }),
     });
+    console.log(res);
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
