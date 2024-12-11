@@ -43,7 +43,7 @@ async function processNotifications(
         )?.by ?? "Someone";
 
       await queueMessage({
-        url: "/api/process-yoink",
+        url: "api/process-yoink",
         body: {
           yoinkId: `yoink:${yoink.id}`,
           from: yoink.from,
