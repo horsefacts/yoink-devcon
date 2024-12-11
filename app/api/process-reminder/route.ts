@@ -13,6 +13,13 @@ async function handler(request: Request) {
       return NextResponse.json({ status: "no_token" });
     }
 
+    const body = {
+      notificationId: reminderId,
+      title: "It's time to Yoink!",
+      body: "Your cooldown has expired. Time to yoink the flag!",
+      targetUrl: "https://yoink.party/framesV2/",
+      tokens: [notificationToken],
+    };
     const response = await fetch(
       "https://api.warpcast.com/v1/frame-notifications",
       {
@@ -20,13 +27,7 @@ async function handler(request: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          notificationId: uuidv4(),
-          title: "It's time to Yoink!",
-          body: "Your cooldown has expired. Time to yoink the flag!",
-          targetUrl: "https://yoink.party/framesV2/",
-          tokens: [notificationToken],
-        }),
+        body: JSON.stringify(body),
       },
     );
 
@@ -37,6 +38,7 @@ async function handler(request: Request) {
     if (!response.ok) {
       throw new Error(`Warpcast API error: ${response.status}`);
     }
+    console.log("Delivered reminder:", body);
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
