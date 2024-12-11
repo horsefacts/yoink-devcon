@@ -24,7 +24,7 @@ export async function queueMessage({
     body,
     ...(notBefore && { notBefore }),
     retries,
-    deduplicationId: messageId.replace(":", "_"),
+    deduplicationId: messageId.replaceAll(":", "_"),
   });
 }
 
@@ -33,5 +33,6 @@ export async function scheduleNotificationProcessing() {
     destination: `${process.env.APP_URL}api/process-notifications`,
     cron: "* * * * *",
     retries: 3,
+    scheduleId: "process-notifications",
   });
 }
