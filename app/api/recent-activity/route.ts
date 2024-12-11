@@ -42,10 +42,12 @@ async function processNotifications(
           (activity) => activity.by && activity.timestamp === yoink.timestamp,
         )?.by ?? "Someone";
 
+      const yoinkId = `yoink:${yoink.id}`;
       await queueMessage({
+        messageId: yoinkId,
         url: "api/process-yoink",
         body: {
-          yoinkId: `yoink:${yoink.id}`,
+          yoinkId,
           from: yoink.from,
           by: yoink.by,
           username,

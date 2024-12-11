@@ -7,6 +7,7 @@ const client = new Client({
 export type QueueMessage = {
   url: string;
   body: Record<string, any>;
+  messageId: string;
   notBefore?: number;
   retries?: number;
 };
@@ -14,6 +15,7 @@ export type QueueMessage = {
 export async function queueMessage({
   url,
   body,
+  messageId,
   notBefore,
   retries = 3,
 }: QueueMessage) {
@@ -22,6 +24,6 @@ export async function queueMessage({
     body,
     ...(notBefore && { notBefore }),
     retries,
-    contentBasedDeduplication: true,
+    deduplicationId: messageId,
   });
 }

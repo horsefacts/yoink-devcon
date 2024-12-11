@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     const reminderId = `reminder:${fid}:${sendAt}`;
 
     await queueMessage({
+      messageId: reminderId,
       url: "api/process-reminder",
       body: {
         reminderId,
