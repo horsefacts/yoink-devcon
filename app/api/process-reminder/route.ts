@@ -13,19 +13,30 @@ async function handler(request: Request) {
       return NextResponse.json({ status: "no_token" });
     }
 
-    await fetch("https://api.warpcast.com/v1/frame-notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://api.warpcast.com/v1/frame-notifications",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notificationId: uuidv4(),
+          title: "It's time to Yoink!",
+          body: "Your cooldown has expired. Time to yoink the flag!",
+          targetUrl: "https://yoink.party/framesV2/",
+          tokens: [notificationToken],
+        }),
       },
-      body: JSON.stringify({
-        notificationId: uuidv4(), //reminderId,
-        title: "It's time to Yoink!",
-        body: "Your cooldown has expired. Time to yoink the flag!",
-        targetUrl: "https://yoink.party/framesV2/",
-        tokens: [notificationToken],
-      }),
-    });
+    );
+
+    if (response.status === 429) {
+      throw new Error("Rate limited by Warpcast API");
+    }
+
+    if (!response.ok) {
+      throw new Error(`Warpcast API error: ${response.status}`);
+    }
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {

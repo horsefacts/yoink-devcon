@@ -19,23 +19,35 @@ async function handler(request: Request) {
       return NextResponse.json({ status: "no_token" });
     }
 
-    const res = await fetch("https://api.warpcast.com/v1/frame-notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://api.warpcast.com/v1/frame-notifications",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notificationId: uuidv4(),
+          title: "You've been Yoinked!",
+          body: `${username} yoinked the flag from you. Yoink it back!`,
+          targetUrl: "https://yoink.party/framesV2/",
+          tokens: [notificationToken],
+        }),
       },
-      body: JSON.stringify({
-        notificationId: uuidv4(), //yoinkId,
-        title: "You've been Yoinked!",
-        body: `${username} yoinked the flag from you. Yoink it back!`,
-        targetUrl: "https://yoink.party/framesV2/",
-        tokens: [notificationToken],
-      }),
-    });
+    );
+
+    if (response.status === 429) {
+      throw new Error("Rate limited by Warpcast API");
+    }
+
+    if (!response.ok) {
+      throw new Error(`Warpcast API error: ${response.status}`);
+    }
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
     console.error("Error processing yoink notification:", error);
+    // Return 500 to trigger QStash retry
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
