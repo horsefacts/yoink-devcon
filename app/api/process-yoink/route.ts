@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getNotificationTokenForFid } from "../../../lib/kv";
 import { getUserByAddress } from "../../../lib/neynar";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { v4 as uuidv4 } from "uuid";
 
 async function handler(request: Request) {
   const body = await request.json();
@@ -25,7 +26,7 @@ async function handler(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        notificationId: yoinkId,
+        notificationId: uuidv4(), //yoinkId,
         title: "You've been Yoinked!",
         body: `${username} yoinked the flag from you. Yoink it back!`,
         targetUrl: "https://yoink.party/framesV2/",

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getNotificationTokenForFid } from "../../../lib/kv";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { v4 as uuidv4 } from "uuid";
 
 async function handler(request: Request) {
   const body = await request.json();
@@ -18,7 +19,7 @@ async function handler(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        notificationId: reminderId,
+        notificationId: uuidv4(), //reminderId,
         title: "It's time to Yoink!",
         body: "Your cooldown has expired. Time to yoink the flag!",
         targetUrl: "https://yoink.party/framesV2/",
