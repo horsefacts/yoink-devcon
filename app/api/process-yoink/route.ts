@@ -13,6 +13,7 @@ async function handler(request: Request) {
     if (!user?.fid) {
       return NextResponse.json({ status: "no_fid" });
     }
+    const fid = user?.fid;
 
     const notificationToken = await getNotificationTokenForFid(user.fid);
     if (!notificationToken) {
@@ -44,7 +45,7 @@ async function handler(request: Request) {
     if (!response.ok) {
       throw new Error(`Warpcast API error: ${response.status}`);
     }
-    console.log("Delivered yoink:", body);
+    console.log(`Delivered yoink to fid ${fid}:`, body);
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {

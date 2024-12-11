@@ -38,7 +38,7 @@ async function handler(request: Request) {
     if (!response.ok) {
       throw new Error(`Warpcast API error: ${response.status}`);
     }
-    console.log("Delivered reminder:", body);
+    console.log(`Delivered reminder to fid ${fid}:`, body);
 
     return NextResponse.json({ status: "sent" });
   } catch (error) {
