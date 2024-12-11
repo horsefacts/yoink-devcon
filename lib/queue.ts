@@ -24,6 +24,6 @@ export async function queueMessage({
     body,
     ...(notBefore && { notBefore }),
     retries,
-    deduplicationId: messageId,
+    deduplicationId: messageId.replace(":", "_"),
   });
 }
