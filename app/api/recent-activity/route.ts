@@ -43,7 +43,7 @@ async function processNotifications(
         )?.by ?? "Someone";
 
       const yoinkId = `yoink:${yoink.id}`;
-      await queueMessage({
+      const res = await queueMessage({
         messageId: yoinkId,
         url: "api/process-yoink",
         body: {
@@ -53,6 +53,7 @@ async function processNotifications(
           username,
         },
       });
+      console.log(res);
     }
   } catch (error) {
     console.error("Error queueing notifications:", error);
