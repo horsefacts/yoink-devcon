@@ -10,7 +10,7 @@ export function CastoutLeaderboardToggle() {
   const [activeTab, setActiveTab] = useState<Tab>("tribes");
 
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 px-3 flex border-b border-[#DBDBDB]">
         <button
           onClick={() => setActiveTab("tribes")}
@@ -35,8 +35,8 @@ export function CastoutLeaderboardToggle() {
           )}
         </button>
       </div>
-      <div className="flex-1 min-h-0 mt-4">
-        <div className="h-full overflow-y-auto">
+      <div className="flex-1 overflow-hidden mt-4">
+        <div className="h-full overflow-y-auto pb-[120px]">
           {activeTab === "tribes" ? (
             <TribesLeaderboard />
           ) : (

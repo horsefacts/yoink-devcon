@@ -212,7 +212,9 @@ function YoinkStart({
             )}
             <div className="text-sm">
               The flag has been yoinked{" "}
-              <span className="text-[#BA181B]">{totalYoinks} times</span>
+              <span className="text-[#BA181B]">
+                {totalYoinks} {parseInt(totalYoinks) === 1 ? "time" : "times"}
+              </span>
             </div>
           </>
         )}

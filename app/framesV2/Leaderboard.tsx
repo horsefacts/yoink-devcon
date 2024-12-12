@@ -32,7 +32,7 @@ export function Leaderboard() {
                 {leader.username}
               </div>
               <div className="text-xs text-[#8B99A4]">
-                {leader.yoinks} yoinks
+                {leader.yoinks} {leader.yoinks === 1 ? "yoink" : "yoinks"}
               </div>
             </div>
           </div>

@@ -65,7 +65,7 @@ export function TopTribes() {
           </div>
           <div className="mb-3">
             <div className="text-xs text-[#8B99A4]">
-              {tribe.totalYoinks} yoinks
+              {tribe.totalYoinks} {tribe.totalYoinks === 1 ? "yoink" : "yoinks"}
             </div>
           </div>
           {tribe.mvp && (

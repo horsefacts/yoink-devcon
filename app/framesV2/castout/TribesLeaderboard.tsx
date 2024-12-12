@@ -32,7 +32,7 @@ export function TribesLeaderboard() {
   );
 
   return (
-    <div className="px-3">
+    <div className="px-3 pb-[120px]">
       {sortedTribes.map((tribe, index) => (
         <div
           key={tribe.tribe}
@@ -50,7 +50,8 @@ export function TribesLeaderboard() {
                 {index === 0 && "🥇 "}
                 {index === 1 && "🥈 "}
                 {index === 2 && "🥉 "}
-                {tribe.totalYoinks} yoinks
+                {tribe.totalYoinks}{" "}
+                {tribe.totalYoinks === 1 ? "yoink" : "yoinks"}
               </div>
             </div>
           </div>

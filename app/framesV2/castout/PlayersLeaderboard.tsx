@@ -25,7 +25,7 @@ export function PlayersLeaderboard() {
   const sortedPlayers = [...data.players].sort((a, b) => b.yoinks - a.yoinks);
 
   return (
-    <div className="px-3">
+    <div className="px-3 pb-[120px]">
       {sortedPlayers.map((player, index) => (
         <div
           key={player.address}
@@ -65,7 +65,7 @@ export function PlayersLeaderboard() {
                 </span>
                 <span className="text-[#8B99A4]">
                   {" "}
-                  • {player.yoinks} yoinks
+                  • {player.yoinks} {player.yoinks === 1 ? "yoink" : "yoinks"}
                 </span>
               </div>
             </div>

@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Page() {
   return (
-    <div className="flex flex-col h-[100vh]">
+    <div className="fixed inset-0 max-w-screen-sm mx-auto flex flex-col">
       <div className="flex-1 overflow-hidden p-3 space-y-3">
         <ErrorBoundary>
           <Suspense>
