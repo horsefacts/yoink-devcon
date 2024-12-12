@@ -6,6 +6,24 @@ import { Suspense } from "react";
 import { CloseButton } from "../../components/CloseButton";
 import { CountdownTimer } from "./CountdownTimer";
 
+const BASE_URL = process.env.DEPLOYMENT_URL || process.env.VERCEL_URL;
+const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
+const route = `${domain}/framesV2/castout`;
+const frame = {
+  version: "next",
+  imageUrl: `${route}/opengraph-image`,
+  button: {
+    title: "🏆 Castout Leaderboard",
+    action: {
+      type: "launch_frame",
+      name: "Yoink! Castout",
+      url: route,
+      splashImageUrl: "https://yoink.party/logo.png",
+      splashBackgroundColor: "#f5f0ec",
+    },
+  },
+};
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,6 +32,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "Yoink! Castout",
       description: "Yoink Castout Event Leaderboard",
+    },
+    other: {
+      "fc:frame": JSON.stringify(frame),
     },
   };
 }
