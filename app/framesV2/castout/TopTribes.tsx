@@ -85,6 +85,9 @@ export function TopTribes() {
               <div className="text-sm font-medium truncate max-w-[100px]">
                 {tribe.mvp.username}
               </div>
+              <div className="bg-[#FDE8E9] border border-[#F9D0D3] text-[#BA181B] text-[10px] font-semibold px-1.5 py-[2px] rounded">
+                🏆 MVP
+              </div>
             </div>
           )}
         </div>

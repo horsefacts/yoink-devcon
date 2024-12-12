@@ -11,6 +11,17 @@ export function PlayersLeaderboard() {
 
   if (!data) return null;
 
+  // Create a map of tribe MVPs
+  const tribeMVPs = new Map();
+  data.players.forEach((player) => {
+    if (
+      !tribeMVPs.has(player.tribe) ||
+      tribeMVPs.get(player.tribe).yoinks < player.yoinks
+    ) {
+      tribeMVPs.set(player.tribe, player);
+    }
+  });
+
   const sortedPlayers = [...data.players].sort((a, b) => b.yoinks - a.yoinks);
 
   return (
@@ -34,8 +45,16 @@ export function PlayersLeaderboard() {
               />
             </div>
             <div className="flex-shrink min-w-0">
-              <div className="font-semibold text-sm leading-5 truncate">
+              <div className="font-semibold text-sm leading-5 truncate flex items-center gap-1">
                 {player.username}
+                {tribeMVPs.get(player.tribe)?.address === player.address && (
+                  <>
+                    <span className="text-[#8B99A4]">•</span>
+                    <span className="text-[#BA181B] text-[10px] font-semibold">
+                      🏆
+                    </span>
+                  </>
+                )}
               </div>
               <div className="text-xs">
                 <span
