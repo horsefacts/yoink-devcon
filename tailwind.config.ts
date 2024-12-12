@@ -80,14 +80,30 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "pulse-subtle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-subtle": "pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
+  safelist: [
+    "text-[#0052FF]",
+    "text-[#8963D2]",
+    "text-orange-400",
+    "text-yellow-400",
+    "text-cyan-400",
+    "text-pink-600",
+    "text-green-600",
+    "text-teal-700",
+    "text-red-600",
+  ],
 } satisfies Config;
 
 export default config;

@@ -3,6 +3,7 @@ import { UserStatsResponse } from "../api/user-stats/route";
 import { TotalYoinksResponse } from "../api/total-yoinks/route";
 import { LeaderboardEntryWithUserData } from "../../lib/contract";
 import { YoinkActivity, YoinkDataResponse } from "../api/recent-activity/route";
+import type { CastoutResponse } from "../api/castout/route";
 
 export function useUserStats(address: string) {
   return useSuspenseQuery({
@@ -102,6 +103,19 @@ export function useRankings(address: string) {
         throw new Error("Failed to fetch rankings");
       }
       return response.json();
+    },
+  });
+}
+
+export function useCastoutData() {
+  return useQuery({
+    queryKey: ["castout-data"],
+    queryFn: async () => {
+      const response = await fetch("/api/castout", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Failed to fetch castout data");
+      }
+      return response.json() as Promise<CastoutResponse>;
     },
   });
 }
