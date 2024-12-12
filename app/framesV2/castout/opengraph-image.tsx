@@ -16,7 +16,7 @@ export default async function Image() {
       <div
         tw="h-full w-full flex flex-col justify-center items-center"
         style={{
-          backgroundImage: "url(https://yoink.party/frame.png)",
+          backgroundImage: "url(https://yoink.party/blank_frame.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -25,7 +25,7 @@ export default async function Image() {
           <img
             src="https://yoink.party/castout.png"
             alt="Castout Logo"
-            tw="h-48 w-48 object-contain"
+            tw="w-64 object-contain"
           />
           <div tw="flex text-[50px] mt-4 text-white">Yoink! Castout</div>
         </div>
