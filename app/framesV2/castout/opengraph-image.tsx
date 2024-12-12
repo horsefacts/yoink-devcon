@@ -25,9 +25,8 @@ export default async function Image() {
           <img
             src="https://yoink.party/castout.png"
             alt="Castout Logo"
-            tw="w-64 object-contain"
+            style={{ width: 400, marginTop: 200 }}
           />
-          <div tw="flex text-[50px] mt-4 text-white">Yoink! Castout</div>
         </div>
       </div>
     ),
