@@ -13,7 +13,7 @@ const frame = {
   version: "next",
   imageUrl: `${route}/opengraph-image`,
   button: {
-    title: "🏆 Castout Leaderboard",
+    title: "🏆 View Leaderboard",
     action: {
       type: "launch_frame",
       name: "Yoink! Castout",
