@@ -36,10 +36,16 @@ export function CountdownTimer() {
 
   return (
     <div className="flex flex-col items-center my-2">
-      <div className="text-base font-bold mb-1">🚩 challenge ends in:</div>
-      <div className="text-3xl font-black text-[#BA181B] font-mono">
-        {timeLeft}
+      <div className="text-base font-bold mb-1">
+        {timeLeft === "Event ended"
+          ? "🚩 Final Scores"
+          : "🚩 challenge ends in:"}
       </div>
+      {timeLeft !== "Event ended" && (
+        <div className="text-3xl font-black text-[#BA181B] font-mono">
+          {timeLeft}
+        </div>
+      )}
     </div>
   );
 }
