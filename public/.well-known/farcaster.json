@@ -5,12 +5,14 @@
     "signature": "MHgwZmJiYWIwODg3YTU2MDFiNDU3MzVkOTQ5MDRjM2Y1NGUxMzVhZTQxOGEzMWQ5ODNhODAzZmZlYWNlZWMyZDYzNWY4ZTFjYWU4M2NhNTAwOTMzM2FmMTc1NDlmMDY2YTVlOWUwNTljNmZiNDUxMzg0Njk1NzBhODNiNjcyZWJjZTFi"
   },
   "frame": {
-    "version": "0.0.0",
+    "version": "1",
     "name": "Yoink!",
     "iconUrl": "https://yoink.party/logo.png",
+    "homeUrl": "https://yoink.party/framesV2/",
+    "imageUrl": "https://yoink.party/framesV2/opengraph-image",
+    "buttonTitle": "🚩 Start",
     "splashImageUrl": "https://yoink.party/logo.png",
     "splashBackgroundColor": "#f5f0ec",
-    "homeUrl": "https://yoink.party/framesV2/",
     "webhookUrl": "https://yoink.party/api/webhook"
   }
 }
