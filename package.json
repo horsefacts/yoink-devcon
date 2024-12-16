@@ -14,6 +14,7 @@
   "dependencies": {
     "@farcaster/core": "^0.15.6",
     "@farcaster/frame-sdk": "0.0.14",
+    "@farcaster/frame-wagmi-connector": "^0.0.1",
     "@lens-protocol/client": "^2.0.0",
     "@neynar/nodejs-sdk": "^1.68.0",
     "@noble/ed25519": "^2.1.0",
