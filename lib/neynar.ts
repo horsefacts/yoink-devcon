@@ -34,6 +34,9 @@ export const getYoinksWithUsernames = async (
   const uniqueAddresses = [
     ...new Set(yoinks.flatMap((yoink) => [yoink.from, yoink.by])),
   ];
+  if (yoinks.length === 0) {
+    return [];
+  }
 
   const users = await client.fetchBulkUsersByEthereumAddress(uniqueAddresses);
 
