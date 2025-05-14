@@ -1,7 +1,7 @@
 import {
   encodedJsonFarcasterSignatureSchema,
-  eventPayloadSchema,
   jsonFarcasterSignatureHeaderSchema,
+  serverEventSchema,
 } from "@farcaster/frame-sdk";
 import { NextRequest } from "next/server";
 import { ed25519 } from "@noble/curves/ed25519";
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   const payloadData = JSON.parse(
     Buffer.from(requestBody.data.payload, "base64url").toString("utf-8"),
   );
-  const payload = eventPayloadSchema.safeParse(payloadData);
+  const payload = serverEventSchema.safeParse(payloadData);
 
   if (payload.success === false) {
     return Response.json(
