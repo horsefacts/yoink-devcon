@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, Suspense } from "react";
-import sdk, { FrameContext } from "@farcaster/frame-sdk";
+import sdk, { Context, AddMiniApp } from "@farcaster/frame-sdk";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Flag from "../../public/flag_simple.png";
@@ -60,7 +60,7 @@ function YoinkStart({
   const queryClient = useQueryClient();
 
   const [hash, setHash] = useState<Hex>();
-  const [context, setContext] = useState<FrameContext>();
+  const [context, setContext] = useState<Context.FrameContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
   const [yoinkStartTime, setYoinkStartTime] = useState<number>();
 
@@ -119,29 +119,29 @@ function YoinkStart({
     try {
       const result = await sdk.actions.addFrame();
 
-      if (result.added) {
-        if (result.notificationDetails) {
-          await fetch("/api/notification-token", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fid: context?.user.fid,
-              token: result.notificationDetails.token,
-            }),
-          });
-          alert("Saved notification token.");
-        } else {
-          alert("Notification token already saved.");
-        }
-      } else if (result.reason === "rejected_by_user") {
-        alert("User dismissed add frame.");
-      } else if (result.reason === "invalid_domain_manifest") {
-        alert("Invalid frame manifest.");
+      if (result.notificationDetails) {
+        await fetch("/api/notification-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fid: context?.user.fid,
+            token: result.notificationDetails.token,
+          }),
+        });
+        alert("Saved notification token.");
+      } else {
+        alert("Notification token already saved.");
       }
     } catch (error) {
-      alert("Failed to store notification token.");
+      if (error instanceof AddMiniApp.RejectedByUser) {
+        alert("User dismissed add frame.");
+      } else if (error instanceof AddMiniApp.InvalidDomainManifest) {
+        alert("Invalid frame manifest.");
+      } else {
+        alert("Failed to store notification token.");
+      }
     }
   }, [context?.user.fid]);
 
