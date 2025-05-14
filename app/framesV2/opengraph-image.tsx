@@ -50,6 +50,9 @@ export default async function Image() {
     ),
     {
       ...size,
+      headers: {
+        "Cache-Control": "public, max-age=300, s-maxage=300",
+      },
     },
   );
 }
