@@ -59,7 +59,7 @@ type YoinkEvent = {
 
 export const getIndexerYoinks = async (): Promise<YoinkEvent[]> => {
   const response = await fetch(
-    "https://yoink-indexer-production.up.railway.app/recent",
+    "https://yoink-indexer-production-1b27.up.railway.app/recent",
     { cache: "no-store" },
   );
   return response.json();
@@ -98,7 +98,7 @@ export type LeaderboardResult = LeaderboardEntryWithUserData[];
 
 export const getLeaderboard = async (count: number = 5) => {
   const response = await fetch(
-    "https://yoink-indexer-production.up.railway.app/leaderboard",
+    "https://yoink-indexer-production-1b27.up.railway.app/leaderboard",
     {
       cache: "no-store",
     },
@@ -175,7 +175,7 @@ export const getAddressRankings = async (
   address: string,
 ): Promise<RankingResponse> => {
   const response = await fetch(
-    `https://yoink-indexer-production.up.railway.app/leaderboard/${address}`,
+    `https://yoink-indexer-production-1b27.up.railway.app/leaderboard/${address}`,
     {
       cache: "no-store",
     },
@@ -187,7 +187,7 @@ export const getYoinksSinceId = async (
   sinceId: string,
 ): Promise<YoinkEvent[]> => {
   const response = await fetch(
-    `https://yoink-indexer-production.up.railway.app/yoinks-since/${sinceId}`,
+    `https://yoink-indexer-production-1b27.up.railway.app/yoinks-since/${sinceId}`,
     { cache: "no-store" },
   );
   return response.json();
