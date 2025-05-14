@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@farcaster/core": "^0.15.6",
-    "@farcaster/frame-sdk": "^0.0.17",
+    "@farcaster/frame-sdk": "^0.0.41",
     "@farcaster/frame-wagmi-connector": "^0.0.1",
     "@neynar/nodejs-sdk": "^1.68.0",
     "@noble/ed25519": "^2.1.0",
