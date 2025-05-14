@@ -20,7 +20,7 @@ export type CastoutResponse = {
 
 export async function GET() {
   const response = await fetch(
-    "https://yoink-indexer-production.up.railway.app/castout",
+    "https://yoink-indexer-production-1b27.up.railway.app/castout",
     { cache: "no-store" },
   );
   const data: CastoutResponse = await response.json();
