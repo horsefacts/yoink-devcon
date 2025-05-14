@@ -859,7 +859,7 @@
     ox "^0.4.0"
     zod "^3.23.8"
 
-"@farcaster/frame-sdk@0.0.17":
+"@farcaster/frame-sdk@^0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@farcaster/frame-sdk/-/frame-sdk-0.0.17.tgz#ec843be73174d232e1d0b10826727364c7ad3fc4"
   integrity sha512-5yiRWHBchK1urWZXkqFaHxKanJUYxann0rFN/hXSBggXSR2ZzwSBtgpkJJw6GtLuuWG5iWouCnHjJw/tcvK3Fg==
@@ -1093,20 +1093,6 @@
     ethers "^5.7.2"
     tslib "^2.6.2"
 
-"@lens-protocol/blockchain-bindings@0.10.2":
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/blockchain-bindings/-/blockchain-bindings-0.10.2.tgz#a6db4cf43a1dc1dfc13d602caf56711e1a64b021"
-  integrity sha512-WIlp30gohy/EuTD+Oqb2ACftpIkBE3wOC1WgiaFeu1ybpnIY0PnUn0hAQeecG6TIekhP3VvMXK82BXppsv2Nhw==
-  dependencies:
-    "@ethersproject/abi" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/providers" "^5.7.2"
-    "@ethersproject/units" "^5.7.0"
-    "@lens-protocol/domain" "0.12.0"
-    "@lens-protocol/shared-kernel" "0.12.0"
-    ethers "^5.7.2"
-    tslib "^2.6.2"
-
 "@lens-protocol/client@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@lens-protocol/client/-/client-2.0.0.tgz#e1882bb4362b2f34ccec9c66db26ebdcb16573b4"
@@ -1131,44 +1117,12 @@
     tslib "^2.6.2"
     zod "^3.22.4"
 
-"@lens-protocol/client@^2.0.0":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/client/-/client-2.3.1.tgz#833122c7780ea2ddd797e0d2272845d9c1214205"
-  integrity sha512-Ey1yg8N2lp51wyWXKacOs36aOHlmCsF4ysCBJH4C85wwxIFBKbN5jXZX9Zxd1Gfe658SxKU2zGjBsg3X6LikiA==
-  dependencies:
-    "@ethersproject/abi" "^5.7.0"
-    "@ethersproject/abstract-signer" "^5.7.0"
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/hash" "^5.7.0"
-    "@ethersproject/providers" "^5.7.2"
-    "@ethersproject/wallet" "^5.7.0"
-    "@lens-protocol/blockchain-bindings" "0.10.2"
-    "@lens-protocol/gated-content" "0.5.1"
-    "@lens-protocol/shared-kernel" "0.12.0"
-    "@lens-protocol/storage" "0.8.1"
-    graphql "^16.8.1"
-    graphql-request "^6.1.0"
-    graphql-tag "^2.12.6"
-    jwt-decode "^3.1.2"
-    tslib "^2.6.2"
-    zod "^3.22.4"
-
 "@lens-protocol/domain@0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@lens-protocol/domain/-/domain-0.11.0.tgz#4020ea2f81ef97bf489babce01eedc480fcb69a8"
   integrity sha512-s0qQ3w4Y228OJ5cs9O5Oo61XX4CYdhBFycTN800lSIUPAKcGntllhupfFd31fkgF8uc2zXhJTQZNuXWwHgFsNw==
   dependencies:
     "@lens-protocol/shared-kernel" "0.11.0"
-    tslib "^2.6.2"
-
-"@lens-protocol/domain@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/domain/-/domain-0.12.0.tgz#2b40e3631f773197814a713f11a31523d8f9fe78"
-  integrity sha512-uyCuHstIPq3vtNkxOFiDah/EfNMjppHDOXnbnstDLpXD7xXZInYtdDqd0ENtg2j+0egGqHwvQJXciSDqGBJzmA==
-  dependencies:
-    "@lens-protocol/shared-kernel" "0.12.0"
     tslib "^2.6.2"
 
 "@lens-protocol/gated-content@0.4.0":
@@ -1178,21 +1132,6 @@
   dependencies:
     "@lens-protocol/shared-kernel" "0.11.0"
     "@lens-protocol/storage" "0.8.0"
-    "@lit-protocol/constants" "2.1.62"
-    "@lit-protocol/crypto" "2.1.62"
-    "@lit-protocol/encryption" "2.1.62"
-    "@lit-protocol/node-client" "^2.1.62"
-    "@lit-protocol/types" "2.1.62"
-    siwe "^2.1.4"
-    tslib "^2.6.2"
-
-"@lens-protocol/gated-content@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/gated-content/-/gated-content-0.5.1.tgz#4a918d8d36ad396da3614ebde7f6e1ea5ce64b35"
-  integrity sha512-rXD0/lkdFIGrwi7+LLgxYwb1Bbsnbi3XouUxfXbqBD32YwKkpYRNb0EfYcB3HZOQv9vmeTTlyrozNKxWoCBJ3A==
-  dependencies:
-    "@lens-protocol/shared-kernel" "0.12.0"
-    "@lens-protocol/storage" "0.8.1"
     "@lit-protocol/constants" "2.1.62"
     "@lit-protocol/crypto" "2.1.62"
     "@lit-protocol/encryption" "2.1.62"
@@ -1212,32 +1151,12 @@
     traverse "^0.6.7"
     tslib "^2.6.2"
 
-"@lens-protocol/shared-kernel@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/shared-kernel/-/shared-kernel-0.12.0.tgz#ea8d14ef53df3e34c7dcc8ed5e6b9002909dd65a"
-  integrity sha512-+trBZPjGDSRMVafZF6jXcfKc8UVHr1bVRjxeAVO1ZpR7zWfampJhxMO+7jbmmhvmYmf5Losp7Ffq4//szKloaA==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    decimal.js "^10.4.3"
-    lodash "^4.17.21"
-    traverse "^0.6.7"
-    tslib "^2.6.2"
-
 "@lens-protocol/storage@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@lens-protocol/storage/-/storage-0.8.0.tgz#8bd39dd4f57da66ee6a0f07ea3e40fe96bbf368d"
   integrity sha512-LJ5JpLExjGh4jpUbXbId+nAEIBULmuuGkIX/hPULA6W/7SWDhutfe+TfK8wOhUnr52iA1gNjoKE/OWWPvpyEQw==
   dependencies:
     "@lens-protocol/shared-kernel" "0.11.0"
-    tslib "^2.6.2"
-    zod "^3.22.4"
-
-"@lens-protocol/storage@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/storage/-/storage-0.8.1.tgz#c624fb46862cb0e4a1ee8e7dfd453d48463bbd97"
-  integrity sha512-9nOf8wnDEYAd6Jjoqw5kM7YvZ+g1Y9LfhLfP0ZcAl/nx3uPWBO0cT7GSZWBXAwQ7ayW6Kno5P+vFoBFEaNVVLQ==
-  dependencies:
-    "@lens-protocol/shared-kernel" "0.12.0"
     tslib "^2.6.2"
     zod "^3.22.4"
 
@@ -9062,7 +8981,16 @@ strict-uri-encode@^2.0.0:
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -9162,7 +9090,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -10055,7 +9990,7 @@ word-wrap@^1.2.5:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -10068,6 +10003,15 @@ wrap-ansi@^6.0.1, wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
