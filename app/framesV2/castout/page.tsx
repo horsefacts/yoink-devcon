@@ -11,7 +11,7 @@ const domain = BASE_URL ? `https://${BASE_URL}` : "http://localhost:3000";
 const route = `${domain}/framesV2/castout`;
 const frame = {
   version: "next",
-  imageUrl: `${route}/opengraph-image`,
+  imageUrl: `${route}/embed`,
   button: {
     title: "🏆 View Leaderboard",
     action: {
