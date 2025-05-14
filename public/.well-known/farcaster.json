@@ -13,6 +13,7 @@
     "buttonTitle": "🚩 Start",
     "splashImageUrl": "https://yoink.party/logo.png",
     "splashBackgroundColor": "#f5f0ec",
-    "webhookUrl": "https://yoink.party/api/webhook"
+    "webhookUrl": "https://yoink.party/api/webhook",
+    "primaryCategory": "games"
   }
 }
