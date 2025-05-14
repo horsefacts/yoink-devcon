@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import sdk from "@farcaster/frame-sdk";
+import sdk, { AddMiniApp } from "@farcaster/frame-sdk";
 import { useNotificationToken } from "../hooks/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { PrimaryButton } from "./PrimaryButton";
@@ -37,36 +37,34 @@ export function AddFrameButton() {
       setStatus("loading");
       const result = await sdk.actions.addFrame();
 
-      if (result.added) {
-        if (result.notificationDetails) {
-          const context = await sdk.context;
+      if (result.notificationDetails) {
+        const context = await sdk.context;
 
-          await fetch("/api/notification-token", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fid: context.user.fid,
-              token: result.notificationDetails.token,
-            }),
-          });
-          setStatus("success");
-          queryClient.invalidateQueries({ queryKey: ["notification-token"] });
-          toast.success("Frame added successfully!");
-        } else {
-          setStatus("success");
-        }
-      } else if (result.reason === "rejected_by_user") {
-        setStatus("error");
-        setErrorMessage("You dismissed the frame request");
-      } else if (result.reason === "invalid_domain_manifest") {
-        setStatus("error");
-        setErrorMessage("Invalid frame manifest");
+        await fetch("/api/notification-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fid: context.user.fid,
+            token: result.notificationDetails.token,
+          }),
+        });
+        setStatus("success");
+        queryClient.invalidateQueries({ queryKey: ["notification-token"] });
+        toast.success("Frame added successfully!");
+      } else {
+        setStatus("success");
       }
     } catch (error) {
+      if (error instanceof AddMiniApp.RejectedByUser) {
+        setErrorMessage("You dismissed the frame request");
+      } else if (error instanceof AddMiniApp.InvalidDomainManifest) {
+        setErrorMessage("Invalid frame manifest");
+      } else {
+        setErrorMessage("Failed to store notification token");
+      }
       setStatus("error");
-      setErrorMessage("Failed to store notification token");
     }
   }, [status, queryClient, data?.hasToken]);
 
