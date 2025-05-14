@@ -15,7 +15,7 @@ const route = `${domain}/framesV2`;
 const frame = {
   version: "2",
   image: {
-    url: `${route}/embed`,
+    url: `${route}/opengraph-image?v=1`,
     aspectRatio: "1:1",
   },
   cta: {

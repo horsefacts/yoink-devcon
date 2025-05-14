@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getRecentYoinkers, getTotalYoinks } from "../../lib/contract";
 
-export const dynamic = "force-dynamic";
 export const alt = "yoink the flag";
 export const size = {
   width: 1260,
