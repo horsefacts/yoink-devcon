@@ -7,6 +7,7 @@ export const size = {
   height: 660,
 };
 
+export const dynamic = "force-dynamic";
 export const contentType = "image/png";
 export const revalidate = 300;
 
@@ -29,12 +30,12 @@ export default async function Image() {
             {yoinkers.map((user, i) => (
               <div
                 key={i}
-                tw="flex overflow-hidden rounded-full h-24 w-24 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-10 first:ml-0"
+                tw="relative overflow-hidden rounded-full h-24 w-24 border-4 border-[#FDF6F5] bg-[#FDF6F5] -ml-10 first:ml-0"
               >
                 {!!user.pfpUrl && (
                   <img
                     src={user.pfpUrl}
-                    tw="object-cover w-full h-full"
+                    tw="absolute w-full h-full object-cover object-center"
                     alt={user.username}
                   />
                 )}
