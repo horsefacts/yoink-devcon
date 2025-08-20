@@ -15,5 +15,8 @@
     "splashBackgroundColor": "#f5f0ec",
     "webhookUrl": "https://yoink.party/api/webhook",
     "primaryCategory": "games"
+  },
+  "baseBuilder": {
+    "allowedAddresses": ["0xE8C088f750544b434573825769A5FC79D96cc83a"]
   }
 }
