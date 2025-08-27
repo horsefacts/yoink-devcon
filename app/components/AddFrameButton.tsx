@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import sdk, { AddMiniApp } from "@farcaster/frame-sdk";
+import sdk, { AddMiniApp } from "@farcaster/miniapp-sdk";
 import { useNotificationToken } from "../hooks/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { PrimaryButton } from "./PrimaryButton";

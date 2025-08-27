@@ -1,6 +1,6 @@
 "use client";
 
-import sdk from "@farcaster/frame-sdk";
+import sdk from "@farcaster/miniapp-sdk";
 import { useEffect, useState } from "react";
 
 const END_DATE = new Date("2025-05-15T03:00:00.000Z");

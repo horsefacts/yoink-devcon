@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@farcaster/core": "^0.15.6",
-    "@farcaster/frame-sdk": "^0.0.41",
-    "@farcaster/frame-wagmi-connector": "^0.0.1",
+    "@farcaster/miniapp-sdk": "^0.1.9",
+    "@farcaster/miniapp-wagmi-connector": "^1.0.0",
     "@neynar/nodejs-sdk": "^1.68.0",
     "@noble/ed25519": "^2.1.0",
     "@tanstack/react-query": "^5.59.20",
@@ -37,7 +37,7 @@
     "wagmi": "^2.13.x"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20.x"
   },
   "devDependencies": {
     "@frames.js/debugger": "^0.3.16",

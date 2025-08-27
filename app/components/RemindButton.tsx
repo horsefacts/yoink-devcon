@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import sdk, { AddMiniApp } from "@farcaster/frame-sdk";
+import sdk, { AddMiniApp } from "@farcaster/miniapp-sdk";
 import { toast } from "react-toastify";
 import { PrimaryButton } from "./PrimaryButton";
 

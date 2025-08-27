@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, Suspense } from "react";
-import sdk, { Context, AddMiniApp } from "@farcaster/frame-sdk";
+import sdk, { Context, AddMiniApp } from "@farcaster/miniapp-sdk";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Flag from "../../public/flag_simple.png";
@@ -60,7 +60,7 @@ function YoinkStart({
   const queryClient = useQueryClient();
 
   const [hash, setHash] = useState<Hex>();
-  const [context, setContext] = useState<Context.FrameContext>();
+  const [context, setContext] = useState<Context.MiniAppContext>();
   const [timeLeft, setTimeLeft] = useState<number>();
   const [yoinkStartTime, setYoinkStartTime] = useState<number>();
 

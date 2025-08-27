@@ -2,7 +2,7 @@ import {
   encodedJsonFarcasterSignatureSchema,
   jsonFarcasterSignatureHeaderSchema,
   serverEventSchema,
-} from "@farcaster/frame-sdk";
+} from "@farcaster/miniapp-sdk";
 import { NextRequest } from "next/server";
 import { ed25519 } from "@noble/curves/ed25519";
 import {
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
   try {
     switch (payload.data.event) {
-      case "frame_added":
+      case "miniapp_added":
         if (payload.data.notificationDetails) {
           await setNotificationTokenForFid(
             fid,
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
         }
         break;
 
-      case "frame_removed":
+      case "miniapp_removed":
         await deleteNotificationTokenForFid(fid);
         console.log(`Removed notification token for fid ${fid}`);
         break;
