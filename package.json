@@ -37,7 +37,7 @@
     "wagmi": "^2.13.x"
   },
   "engines": {
-    "node": ">=20.x"
+    "node": "20.x"
   },
   "devDependencies": {
     "@frames.js/debugger": "^0.3.16",
