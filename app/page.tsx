@@ -4,11 +4,17 @@ import { createExampleURL } from "./utils";
 import { Frame } from "./components/Frame";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const frameMetadata = await fetchMetadata(createExampleURL("/frames"));
+  const filteredMetadata = Object.fromEntries(
+    Object.entries(frameMetadata).filter(([, v]) => v !== undefined),
+  );
+
   return {
     title: "Yoink",
     description: "Click to yoink the flag.",
     other: {
-      ...(await fetchMetadata(createExampleURL("/frames"))),
+      ...filteredMetadata,
+      "base:app_id": "68a5dbd5d3f637a5b9984597",
     },
   };
 }
